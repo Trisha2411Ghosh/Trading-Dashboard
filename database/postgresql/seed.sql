@@ -14,12 +14,15 @@ BEGIN
             IEP,
             CHNG,
             PCT_CHNG,
-            FINAL,
+            FINAL_VALUE,
             FINAL_QUANTITY,
             VALUE,
             FFM_CAP,
-            NM_52W_H,
-            NM_52W_L
+            WEEK_52_HIGH,
+            WEEK_52_LOW,
+            FINAL_PRICE,
+            DAY_HIGH,
+            DAY_LOW
         ) VALUES (
             stock_symbol,
             random_value,
@@ -32,6 +35,9 @@ BEGIN
             ROUND((10 + random() * 990)::NUMERIC, 2),
             ROUND((500 + random() * 1500)::NUMERIC, 2),
             ROUND((100 + random() * 400)::NUMERIC, 2)
+            ROUND((10 + random() * 990)::NUMERIC, 2),  
+            ROUND((500 + random() * 1500)::NUMERIC, 2),  
+            ROUND((100 + random() * 400)::NUMERIC, 2)   
         );
     END LOOP;
 END $$;
@@ -46,7 +52,7 @@ BEGIN
             traded_volume_lakhs,
             traded_value_cr,
             total_market_cap_cr,
-            free_float_market_cap_cr,
+            ffm_cap,
             impact_cost,
             percent_deliverable_traded_quantity,
             applicable_margin_rate,
