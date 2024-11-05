@@ -62,7 +62,7 @@ BEGIN
             record.symbol,
             ROUND((1 + (random() * 100))::numeric, 2),
             ROUND((10 + (random() * 500))::numeric, 2),
-            record.ffm_cap,
+            ROUND(record.ffm_cap * (1 + ((random() - 0.5) * 0.1))::numeric, 2),
             record.ffm_cap,
             ROUND((random() * 0.1)::numeric, 4),
             ROUND((30 + (random() * 70))::numeric, 2),
