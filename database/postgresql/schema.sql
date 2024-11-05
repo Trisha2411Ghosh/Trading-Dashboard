@@ -1,17 +1,20 @@
 -- Table: public.tock_data
-CREATE TABLE IF NOT EXISTS public.stock_data 
+CREATE TABLE IF NOT EXISTS public.stock_data
 (
-    symbol character varying(15) COLLATE pg_catalog."default" NOT NULL,
-    prev_close numeric(10,2),
-    iep numeric(10,2),
-    chng numeric(5,2),
-    pct_chng numeric(5,2),
-    final numeric(10,2),
-    final_quantity bigint,
-    value numeric(15,2),
-    ffm_cap numeric(15,2),
-    nm_52w_h numeric(10,2),
-    nm_52w_l numeric(10,2),
+    symbol character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    prev_close numeric(38,2),
+    iep numeric(38,2),
+    chng numeric(38,2),
+    pct_chng numeric(38,2),
+    final_value numeric(10,2),
+    final_quantity integer,
+    value numeric(38,2),
+    ffm_cap numeric(38,2),
+    week_52_high numeric(10,2),
+    week_52_low numeric(10,2),
+    final_price numeric(38,2),
+    day_high numeric(38,2),
+    day_low numeric(38,2),
     CONSTRAINT symbol PRIMARY KEY (symbol)
 )
 
@@ -28,7 +31,7 @@ CREATE TABLE IF NOT EXISTS public.trade_info
     traded_volume_lakhs numeric,
     traded_value_cr numeric,
     total_market_cap_cr numeric,
-    free_float_market_cap_cr numeric,
+    ffm_cap numeric,
     impact_cost numeric,
     percent_deliverable_traded_quantity numeric,
     applicable_margin_rate numeric,
