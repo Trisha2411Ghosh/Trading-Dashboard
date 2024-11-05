@@ -1,19 +1,15 @@
 CREATE TABLE IF NOT EXISTS stock_data (
-   symbol character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    prev_close numeric(38,2),
-    iep numeric(38,2),
-    chng numeric(38,2),
-    pct_chng numeric(38,2),
-    final_value numeric(10,2),
-    final_quantity integer,
-    value numeric(38,2),
-    ffm_cap numeric(38,2),
-    week_52_high numeric(10,2),
-    week_52_low numeric(10,2),
-    final_price numeric(38,2),
-    day_high numeric(38,2),
-    day_low numeric(38,2),
-    CONSTRAINT symbol PRIMARY KEY (symbol)
+    symbol String,
+    prev_close Decimal(10, 2),
+    iep Decimal(10, 2),
+    chng Decimal(5, 2),
+    pct_chng Decimal(5, 2),
+    final Decimal(10, 2),
+    final_quantity UInt64,
+    value Decimal(15, 2),
+    ffm_cap Decimal(15, 2),
+    nm_52w_h Decimal(10, 2),
+    nm_52w_l Decimal(10, 2)
 ) ENGINE = MergeTree() 
 ORDER BY symbol;
 
