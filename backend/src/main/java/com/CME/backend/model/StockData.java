@@ -1,5 +1,6 @@
 package com.CME.backend.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -17,10 +18,14 @@ public class StockData {
     private BigDecimal chng;
     private BigDecimal pctChng;
     private BigDecimal finalPrice;
-    private int finalQuantity;
+    private Integer finalQuantity;
     private BigDecimal value;
     private BigDecimal ffmCap;
+
+    @Column(name = "nm_52w_h")
     private BigDecimal nm52wH;
+
+    @Column(name = "nm_52w_l")
     private BigDecimal nm52wL;
 
     public String getSymbol() {
@@ -71,7 +76,7 @@ public class StockData {
         this.finalPrice = finalPrice;
     }
 
-    public int getFinalQuantity() {
+    public Integer getFinalQuantity() {
         return finalQuantity;
     }
 

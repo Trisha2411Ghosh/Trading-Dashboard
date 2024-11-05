@@ -1,10 +1,13 @@
 package com.CME.backend.controller;
 
-import com.CME.backend.model.*;
+import com.CME.backend.model.Company;
+import com.CME.backend.model.StockData;
+import com.CME.backend.model.TradeInfo;
+import com.CME.backend.model.PriceInfo;
 import com.CME.backend.service.TradingService;
 import com.CME.backend.util.PerformanceMetrics;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,71 +21,83 @@ public class TradingController {
     private TradingService tradingService;
 
     private PerformanceMetrics performanceMetrics = new PerformanceMetrics();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     // Endpoint to fetch all stock data
     @GetMapping("/stocks")
     public List<StockData> getAllStockData(@RequestParam(defaultValue = "postgres") String dbsource) {
-        performanceMetrics.start();
+        performanceMetrics.startSession();
         List<StockData> stockData = tradingService.getAllStockData(dbsource);
-        performanceMetrics.incrementQueryCount(); // Increment for this query
-        performanceMetrics.end();
+        long dataSize = calculateDataSize(stockData);
+        performanceMetrics.endQuery(dataSize);
         logPerformanceMetrics();
         return stockData;
     }
 
-    // Endpoint to fetch stock data by symbol
+    // Endpoint to fetch specific stock data by symbol
     @GetMapping("/stocks/{symbol}")
     public StockData getStockData(@PathVariable String symbol,
                                   @RequestParam(defaultValue = "postgres") String dbsource) {
-        performanceMetrics.start();
+        performanceMetrics.startSession();
         StockData stockData = tradingService.getStockDataBySymbol(symbol, dbsource);
-        performanceMetrics.incrementQueryCount(); // Increment for this query
-        performanceMetrics.end();
+        long dataSize = calculateDataSize(stockData);
+        performanceMetrics.endQuery(dataSize);
         logPerformanceMetrics();
         return stockData;
     }
 
-    // Endpoint to fetch trade information by symbol
+    // Endpoint to fetch specific trade information for a symbol
     @GetMapping("/trades/{symbol}")
-    public List<TradeInfo> getTradeInfo(@PathVariable String symbol,
-                                        @RequestParam(defaultValue = "postgres") String dbsource) {
-        performanceMetrics.start();
-        List<TradeInfo> tradeInfo = tradingService.getTradeInfoBySymbol(symbol, dbsource);
-        performanceMetrics.incrementQueryCount(); // Increment for this query
-        performanceMetrics.end();
+    public TradeInfo getTradeInfo(@PathVariable String symbol,
+                                  @RequestParam(defaultValue = "postgres") String dbsource) {
+        performanceMetrics.startSession();  // Start session for performance metrics
+        TradeInfo tradeInfo = tradingService.getTradeInfoBySymbol(symbol, dbsource);
+        long dataSize = calculateDataSize(tradeInfo);
+        performanceMetrics.endQuery(dataSize);  // End query and log data size
         logPerformanceMetrics();
         return tradeInfo;
     }
 
-    // Endpoint to fetch company information by symbol
-    @GetMapping("/companies/{symbol}")
-    public List<Company> getCompanyInfo(@PathVariable String symbol,
-                                        @RequestParam(defaultValue = "postgres") String dbsource) {
-        performanceMetrics.start();
-        List<Company> companyInfo = tradingService.getCompanyInfo(symbol, dbsource);
-        performanceMetrics.incrementQueryCount(); // Increment for this query
-        performanceMetrics.end();
-        logPerformanceMetrics();
-        return companyInfo;
-    }
-
-    // Endpoint to fetch price information by symbol
-    @GetMapping("/price/{symbol}")
-    public ResponseEntity<PriceInfo> getPriceInfo(@PathVariable String symbol,
-                                                  @RequestParam(defaultValue = "postgres") String dbsource) {
-        performanceMetrics.start();
+    // Endpoint to fetch specific price information for a symbol
+    @GetMapping("/prices/{symbol}")
+    public PriceInfo getPriceInfo(@PathVariable String symbol,
+                                  @RequestParam(defaultValue = "postgres") String dbsource) {
+        performanceMetrics.startSession();
         PriceInfo priceInfo = tradingService.getPriceInfoBySymbol(symbol, dbsource);
-        performanceMetrics.incrementQueryCount(); // Increment for this query
-        performanceMetrics.end();
+        long dataSize = calculateDataSize(priceInfo);
+        performanceMetrics.endQuery(dataSize);
         logPerformanceMetrics();
-        return priceInfo != null ? ResponseEntity.ok(priceInfo) : ResponseEntity.ok().build();
+        return priceInfo;
     }
 
-    // Method to log performance metrics
+    // Endpoint to fetch specific price information for a symbol
+    @GetMapping("/companies/{symbol}")
+    public Company getCompanyInfo(@PathVariable String symbol,
+                                @RequestParam(defaultValue = "postgres") String dbsource) {
+        performanceMetrics.startSession();
+        Company getCompanyInfo = tradingService.getCompanyInfo(symbol, dbsource);
+        long dataSize = calculateDataSize(getCompanyInfo);
+        performanceMetrics.endQuery(dataSize);
+        logPerformanceMetrics();
+        return getCompanyInfo;
+    }
+
+    // Method to calculate data size in bytes
+    private long calculateDataSize(Object data) {
+        try {
+            return objectMapper.writeValueAsBytes(data).length;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    // NOTE TO SELF - convert these log statements to key value pair for frontend
+    // Method to log performance metrics and reset them
     private void logPerformanceMetrics() {
         System.out.println("Read Speed: " + performanceMetrics.getReadSpeed() + " ms");
         System.out.println("Queries Per Second: " + performanceMetrics.getQueriesPerSecond());
-        System.out.println("Throughput: " + performanceMetrics.getThroughput());
+        System.out.println("Throughput: " + performanceMetrics.getThroughput() + " bytes/sec");
         performanceMetrics.resetMetrics();
     }
 }

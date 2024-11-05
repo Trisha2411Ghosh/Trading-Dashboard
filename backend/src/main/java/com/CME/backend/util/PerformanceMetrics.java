@@ -3,36 +3,39 @@ package com.CME.backend.util;
 public class PerformanceMetrics {
     private long startTime;
     private long endTime;
-    private int queryCount; // Counter for the number of queries
+    private int queryCount;
+    private long totalBytesProcessed;
 
-    public void start() {
+    public void startSession() {
         this.startTime = System.currentTimeMillis();
-        queryCount = 0; // Reset count on start
+        this.queryCount = 0;
+        this.totalBytesProcessed = 0;
     }
 
-    public void end() {
+    public void endQuery(long dataSizeInBytes) {
         this.endTime = System.currentTimeMillis();
+        this.queryCount++;
+        this.totalBytesProcessed += dataSizeInBytes;
     }
 
     public long getReadSpeed() {
-        return endTime - startTime; // Time taken in milliseconds
+        return endTime - startTime;
     }
 
     public double getQueriesPerSecond() {
         long elapsedTimeInSeconds = (endTime - startTime) / 1000;
-        return (elapsedTimeInSeconds > 0) ? (double) queryCount / elapsedTimeInSeconds : queryCount; // Count all queries if elapsed time is 0
+        return (elapsedTimeInSeconds > 0) ? (double) queryCount / elapsedTimeInSeconds : queryCount;
     }
 
-    public void incrementQueryCount() {
-        queryCount++; // Increment query count
+    public double getThroughput() {
+        long elapsedTimeInMillis = endTime - startTime;
+        return (elapsedTimeInMillis > 0) ? (double) totalBytesProcessed / (elapsedTimeInMillis / 1000.0) : 0;
     }
 
     public void resetMetrics() {
-        queryCount = 0;
-    }
-
-    public int getThroughput() {
-        // Example throughput calculation (number of queries over a time period, could implement more)
-        return queryCount;
+        this.startTime = 0;
+        this.endTime = 0;
+        this.queryCount = 0;
+        this.totalBytesProcessed = 0;
     }
 }

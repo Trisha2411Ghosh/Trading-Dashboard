@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -18,7 +19,7 @@ public class ClickhouseRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // Fetch all from stock_data
+    // Fetch all stocks data from stock_data table
     public List<StockData> findAllStockData() {
         String sql = "SELECT symbol, prev_close, iep, chng, pct_chng, final, final_quantity, value, ffm_cap, nm_52w_h, nm_52w_l FROM stock_data";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -38,7 +39,7 @@ public class ClickhouseRepository {
         });
     }
 
-//    fetch a specific symbol from stockdata
+//    fetch data of a specific stock from stock_data using symbol
     public StockData findStockDataBySymbol(String symbol) {
         String sql = "SELECT symbol, prev_close, iep, chng, pct_chng, final, final_quantity, value, ffm_cap, nm_52w_h, nm_52w_l FROM stock_data WHERE LOWER(symbol) = LOWER(?)";
         List<StockData> result = jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
@@ -56,16 +57,16 @@ public class ClickhouseRepository {
             stockData.setNm52wL(rs.getBigDecimal("nm_52w_l"));
             return stockData;
         });
-        return result.isEmpty() ? null : result.get(0); // return null if not found
+        return result.isEmpty() ? null : result.get(0);
     }
 
-    // Fetch trade info for a specific symbol
-    public List<TradeInfo> findTradeInfoBySymbol(String symbol) {
+    //    fetch data of a specific trade from trade_info using symbol
+    public TradeInfo findTradeInfoBySymbol(String symbol) {
         String sql = "SELECT * FROM trade_info WHERE LOWER(symbol) = LOWER(?)";
-        return jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
+        List<TradeInfo>result =  jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
             TradeInfo tradeInfo = new TradeInfo();
             tradeInfo.setId(rs.getInt("id"));
-            tradeInfo.setSymbol(rs.getString("symbol")); // Ensures symbol is set
+            tradeInfo.setSymbol(rs.getString("symbol"));
             tradeInfo.setTradedVolumeLakhs(rs.getBigDecimal("traded_volume_lakhs"));
             tradeInfo.setTradedValueCr(rs.getBigDecimal("traded_value_cr"));
             tradeInfo.setTotalMarketCapCr(rs.getBigDecimal("total_market_cap_cr"));
@@ -76,22 +77,10 @@ public class ClickhouseRepository {
             tradeInfo.setFaceValue(rs.getBigDecimal("face_value"));
             return tradeInfo;
         });
+        return result.isEmpty() ? null : result.get(0);
     }
 
-    // Fetch company details for a specific symbol
-    public List<Company> findCompanyBySymbol(String symbol) {
-        String sql = "SELECT symbol, name, sector, industry FROM companies WHERE LOWER(symbol) = LOWER(?)";
-        return jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
-            Company company = new Company();
-            company.setSymbol(rs.getString("symbol"));
-            company.setName(rs.getString("name"));
-            company.setSector(rs.getString("sector"));
-            company.setIndustry(rs.getString("industry"));
-            return company;
-        });
-    }
-
-    // Fetch price info for a specific symbol
+    //    fetch data of a specific price from price_info using symbol
     public PriceInfo findPriceInfoBySymbol(String symbol) {
         String sql = "SELECT symbol, week_52_high, week_52_low, upper_band, lower_band, price_band, " +
                 "daily_volatility, annualised_volatility, tick_size " +
@@ -113,4 +102,18 @@ public class ClickhouseRepository {
 
         return result.isEmpty() ? null : result.get(0);
     }
+
+    // Fetch company details for a specific symbol from companies
+    public List<Company> findCompanyBySymbol(String symbol) {
+        String sql = "SELECT symbol, name, sector, industry FROM companies WHERE LOWER(symbol) = LOWER(?)";
+        return jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
+            Company company = new Company();
+            company.setSymbol(rs.getString("symbol"));
+            company.setName(rs.getString("name"));
+            company.setSector(rs.getString("sector"));
+            company.setIndustry(rs.getString("industry"));
+            return company;
+        });
+    }
+
 }

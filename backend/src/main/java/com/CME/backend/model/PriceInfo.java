@@ -1,5 +1,6 @@
 package com.CME.backend.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -12,7 +13,10 @@ public class PriceInfo {
     @Id
     private String symbol;
 
+    @Column(name = "week_52_high")
     private BigDecimal week52High;
+
+    @Column(name = "week_52_low")
     private BigDecimal week52Low;
     private BigDecimal upperBand;
     private BigDecimal lowerBand;
