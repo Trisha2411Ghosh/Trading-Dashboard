@@ -21,18 +21,26 @@ The database consists of the following tables:
 - **iep**: Intraday estimated price (numeric(10,2)).
 - **chng**: Change in price (numeric(5,2)).
 - **pct_chng**: Percentage change in price (numeric(5,2)).
-- **final**: Final price of the stock (numeric(10,2)).
+- **final_value**: total value of trades for the stock at the end of the trading day..
 - **final_quantity**: Quantity of stocks traded (bigint).
 - **value**: Value of the stock (numeric(15,2)).
 - **ffm_cap**: Free-float market capitalization (numeric(15,2)).
-- **nm_52w_h**: Normalized 52-week high price (numeric(10,2)).
-- **nm_52w_l**: Normalized 52-week low price (numeric(10,2)).
+- **week_52_high**: Normalized 52-week high price (numeric(10,2)).
+- **week_52_low**: Normalized 52-week low price (numeric(10,2)).
+- **final_price**:The stock’s price at the end of the trading day (numeric(38,2)).
+- **day-high**:The highest price the stock reached during the trading day (numeric(38,2)).
+- **day-low:The lowest price the stock reached during the trading day (numeric(38,2)).
 
-### 2. `companies`
+### 2. `price_info`
 - **symbol**: Unique identifier for each company (text, PRIMARY KEY, NOT NULL).
-- **name**: Name of the company (text, NOT NULL).
-- **sector**: Sector in which the company operates (text).
-- **industry**: Industry category of the company (text).
+- **week_52_high**: Normalized 52-week high price (numeric(10,2)).
+- **week_52_low**: Normalized 52-week low price (numeric(10,2)).
+- **upper-band**:The upper threshold for the stock's trading price range (numeric(38,2)).
+- **lower-band**:The lower threshold for the stock's trading price range (numeric(38,2)).
+- **price-band**: A descriptive range or category for the stock's trading price(numeric(38,2))
+- **daily_volatility**: The stock's price fluctuation within a single trading day.(numeric(38,2))
+- **annualised_volatility**:Projected volatility of the stock over a one-year period (numeric(38,2)).
+- **tick_size**:The minimum price movement allowed for the stock (numeric(38,2)).
 ### 3. `trade_info`
 - **id**: Unique identifier for each trade record (integer, PRIMARY KEY, NOT NULL).
 - **symbol**: Unique identifier for each stock, referencing `stock_data.symbol` (character varying(15), NOT NULL).
