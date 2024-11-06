@@ -1,6 +1,6 @@
-# PostgreSql Folder
+# PostgreSql Database Setup
 
-This folder contains the necessary files to set up and manage the PostgreSQL database for the project. 
+This guide contains the necessary files to set up and manage the PostgreSQL database for the project. 
 
 ## Overview
 
