@@ -90,10 +90,10 @@ BEGIN
             tick_size
         ) VALUES (
             stock_record.symbol,
-            stock_record.nm_52w_h,
-            stock_record.nm_52w_l,
-            ROUND((stock_record.nm_52w_h + random() * 10) :: NUMERIC, 2),  -- Random upper_band based on week_52_high
-            ROUND((stock_record.nm_52w_l + random() * 10) :: NUMERIC, 2),  -- Random lower_band based on week_52_low
+            stock_record.week_52_high,
+            stock_record.week_52_low,
+            ROUND((stock_record.week_52_high + random() * 10) :: NUMERIC, 2),  -- Random upper_band based on week_52_high
+            ROUND((stock_record.week_52_low + random() * 10) :: NUMERIC, 2),  -- Random lower_band based on week_52_low
             'No Band',  
             ROUND((1 + random() * 5) :: NUMERIC, 2),  -- Random daily volatility between 1 and 5
             ROUND((10 + random() * 25) :: NUMERIC, 2),  -- Random annualised volatility between 10 and 35
