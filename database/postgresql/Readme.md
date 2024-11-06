@@ -47,7 +47,7 @@ The database consists of the following tables:
 - **traded_volume_lakhs**: Volume of stocks traded (numeric).
 - **traded_value_cr**: Value of stocks traded (numeric).
 - **total_market_cap_cr**: Total market capitalization (numeric).
-- **free_float_market_cap_cr**: Free float market capitalization (numeric).
+- **ffm_cap**: Free float market capitalization (numeric).
 - **impact_cost**: Impact cost (numeric).
 - **percent_deliverable_traded_quantity**: Percentage of deliverable traded quantity (numeric).
 - **applicable_margin_rate**: Margin rate applicable (numeric).
