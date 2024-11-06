@@ -8,8 +8,8 @@ The database is designed to store trading data. This document outlines the conte
 
 ## Contents
 
-- `schema.sql`: Contains the SQL commands to create the `,stock_info,trade_info,companies` table with unique symbols for each company.
-- `seed.sql`:  Contains sample data to seed the `stock_info,trade_info,companies` table for testing and development purposes.
+- `schema.sql`: Contains the SQL commands to create the `,stock_info,trade_info,price_info` table with unique symbols for each company.
+- `seed.sql`:  Contains sample data to seed the `stock_info,trade_info,price_info` table for testing and development purposes.
 - `ERD.png`:  Contains Entity-Relationhip Model between three models
 
 ## Database Schema
