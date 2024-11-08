@@ -1,7 +1,6 @@
 package com.CME.backend.util;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import com.CME.backend.dto.CombinedStockDataDTO;
@@ -16,7 +15,7 @@ public class CombinedStockDataDTORowMapper implements RowMapper<CombinedStockDat
     @Override
     public CombinedStockDataDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
             CombinedStockDataDTO dto = new CombinedStockDataDTO();
-            dto.setSymbol(rs.getString("s_symbol")); // Using the new alias
+            dto.setSymbol(rs.getString("s_symbol"));
             dto.setPrevClose(rs.getBigDecimal("prev_close"));
             dto.setIep(rs.getBigDecimal("iep"));
             dto.setChng(rs.getBigDecimal("chng"));

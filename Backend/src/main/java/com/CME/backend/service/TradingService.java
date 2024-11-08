@@ -75,6 +75,7 @@ public class TradingService {
         return companyRepository.findBySymbolIgnoreCase(symbol).stream().findFirst().orElse(null);
     }
 
+    //fetch combined data for a specific symbol
     public CombinedStockDataDTO getCombinedDataBySymbol(String symbol, String dbsource) {
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findCombinedDataBySymbol(symbol);

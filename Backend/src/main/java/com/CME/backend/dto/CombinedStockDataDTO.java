@@ -16,7 +16,6 @@ public class CombinedStockDataDTO {
     private BigDecimal nm52wH;
     private BigDecimal nm52wL;
 
-
     // Trade Info fields
     private BigDecimal tradedVolumeLakhs;
     private BigDecimal tradedValueCr;
@@ -70,7 +69,6 @@ public class CombinedStockDataDTO {
     }
 
 
-    // Getters and Setters
     public String getSymbol() {
         return symbol;
     }

@@ -28,7 +28,7 @@ public class ClickhouseRepository {
             stockData.setChng(rs.getBigDecimal("chng"));
             stockData.setPctChng(rs.getBigDecimal("pct_chng"));
             stockData.setFinalPrice(rs.getBigDecimal("final"));
-            stockData.setFinalQuantity(rs.getBigDecimal("final_quantity"));  // Changed from rs.getInt() to rs.getBigDecimal()
+            stockData.setFinalQuantity(rs.getBigDecimal("final_quantity"));
             stockData.setValue(rs.getBigDecimal("value"));
             stockData.setFfmCap(rs.getBigDecimal("ffm_cap"));
             stockData.setNm52wH(rs.getBigDecimal("nm_52w_h"));
@@ -114,6 +114,7 @@ public class ClickhouseRepository {
         });
     }
 
+    // Fetch combined details for a specific symbol
     public CombinedStockDataDTO findCombinedDataBySymbol(String symbol) {
         String sql = "SELECT \n" +
                 "    s.symbol AS s_symbol,\n" +
@@ -152,7 +153,6 @@ public class ClickhouseRepository {
                 "WHERE \n" +
                 "    LOWER(s.symbol) = LOWER(?)\n";
 
-        // Execute the query with the symbol parameter
         return jdbcTemplate.queryForObject(sql, new Object[]{symbol}, new CombinedStockDataDTORowMapper());
     }
-    }
+}
