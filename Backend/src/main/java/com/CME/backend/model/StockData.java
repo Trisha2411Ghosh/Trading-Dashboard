@@ -18,7 +18,7 @@ public class StockData {
     private BigDecimal chng;
     private BigDecimal pctChng;
     private BigDecimal finalPrice;
-    private Integer finalQuantity;
+    private BigDecimal finalQuantity;
     private BigDecimal value;
     private BigDecimal ffmCap;
 
@@ -76,11 +76,11 @@ public class StockData {
         this.finalPrice = finalPrice;
     }
 
-    public Integer getFinalQuantity() {
+    public BigDecimal getFinalQuantity() {
         return finalQuantity;
     }
 
-    public void setFinalQuantity(int finalQuantity) {
+    public void setFinalQuantity(BigDecimal finalQuantity) {
         this.finalQuantity = finalQuantity;
     }
 

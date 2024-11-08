@@ -1,14 +1,19 @@
 package com.CME.backend.service;
 
+import com.CME.backend.dto.CombinedStockDataDTO;
 import com.CME.backend.model.*;
 import com.CME.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TradingService {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private StockDataRepository stockDataRepository;
@@ -25,6 +30,9 @@ public class TradingService {
     @Autowired
     private ClickhouseRepository clickhouseRepository;
 
+    @Autowired
+    private CombinedDataRepository combinedDataRepository;
+
     //fetch all stocks data
     public List<StockData> getAllStockData(String dbsource) {
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
@@ -38,7 +46,7 @@ public class TradingService {
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findStockDataBySymbol(symbol);
         }
-        return stockDataRepository.findBySymbolIgnoreCase(symbol).orElse(null);
+        return stockDataRepository.findBySymbolIgnoreCase(symbol);
     }
 
     //fetch specific trade info using symbol
@@ -65,6 +73,13 @@ public class TradingService {
             return companies.isEmpty() ? null : companies.get(0);
         }
         return companyRepository.findBySymbolIgnoreCase(symbol).stream().findFirst().orElse(null);
+    }
+
+    public CombinedStockDataDTO getCombinedDataBySymbol(String symbol, String dbsource) {
+        if ("clickhouse".equalsIgnoreCase(dbsource)) {
+            return clickhouseRepository.findCombinedDataBySymbol(symbol);
+        }
+        return combinedDataRepository.findCombinedDataBySymbol(symbol);
     }
 
 }

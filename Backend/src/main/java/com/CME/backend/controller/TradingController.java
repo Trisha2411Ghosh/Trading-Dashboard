@@ -1,9 +1,7 @@
 package com.CME.backend.controller;
 
-import com.CME.backend.model.Company;
-import com.CME.backend.model.StockData;
-import com.CME.backend.model.TradeInfo;
-import com.CME.backend.model.PriceInfo;
+import com.CME.backend.dto.CombinedStockDataDTO;
+import com.CME.backend.model.*;
 import com.CME.backend.service.TradingService;
 import com.CME.backend.util.PerformanceMetrics;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +14,6 @@ import java.util.List;
 @RequestMapping("/")
 @CrossOrigin
 public class TradingController {
-
     @Autowired
     private TradingService tradingService;
 
@@ -70,10 +67,10 @@ public class TradingController {
         return priceInfo;
     }
 
-    // Endpoint to fetch specific price information for a symbol
+    // Endpoint to fetch specific companies information for a symbol
     @GetMapping("/companies/{symbol}")
     public Company getCompanyInfo(@PathVariable String symbol,
-                                @RequestParam(defaultValue = "postgres") String dbsource) {
+                                  @RequestParam(defaultValue = "postgres") String dbsource) {
         performanceMetrics.startSession();
         Company getCompanyInfo = tradingService.getCompanyInfo(symbol, dbsource);
         long dataSize = calculateDataSize(getCompanyInfo);
@@ -81,6 +78,7 @@ public class TradingController {
         logPerformanceMetrics();
         return getCompanyInfo;
     }
+
 
     // Method to calculate data size in bytes
     private long calculateDataSize(Object data) {
@@ -92,11 +90,24 @@ public class TradingController {
         }
     }
 
+    @GetMapping("/combined/{symbol}")
+    public CombinedStockDataDTO getCombinedData(
+            @PathVariable String symbol,
+            @RequestParam(defaultValue = "postgres") String dbsource) {
+        performanceMetrics.startSession();
+        CombinedStockDataDTO combinedData = tradingService.getCombinedDataBySymbol(symbol, dbsource);
+        long dataSize = calculateDataSize(combinedData);
+        performanceMetrics.endQuery(dataSize);
+        logPerformanceMetrics();
+        return combinedData;
+    }
+
+
     // NOTE TO SELF - convert these log statements to key value pair for frontend
     // Method to log performance metrics and reset them
     private void logPerformanceMetrics() {
         System.out.println("Read Speed: " + performanceMetrics.getReadSpeed() + " ms");
-        System.out.println("Queries Per Second: " + performanceMetrics.getQueriesPerSecond());
+//        System.out.println("Queries Per Second: " + performanceMetrics.getQueriesPerSecond());
         System.out.println("Throughput: " + performanceMetrics.getThroughput() + " bytes/sec");
         performanceMetrics.resetMetrics();
     }

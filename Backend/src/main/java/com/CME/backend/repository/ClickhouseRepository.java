@@ -1,14 +1,12 @@
 package com.CME.backend.repository;
 
-import com.CME.backend.model.Company;
-import com.CME.backend.model.PriceInfo;
-import com.CME.backend.model.StockData;
-import com.CME.backend.model.TradeInfo;
+import com.CME.backend.dto.CombinedStockDataDTO;
+import com.CME.backend.model.*;
+import com.CME.backend.util.CombinedStockDataDTORowMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -30,7 +28,7 @@ public class ClickhouseRepository {
             stockData.setChng(rs.getBigDecimal("chng"));
             stockData.setPctChng(rs.getBigDecimal("pct_chng"));
             stockData.setFinalPrice(rs.getBigDecimal("final"));
-            stockData.setFinalQuantity(rs.getInt("final_quantity"));
+            stockData.setFinalQuantity(rs.getBigDecimal("final_quantity"));  // Changed from rs.getInt() to rs.getBigDecimal()
             stockData.setValue(rs.getBigDecimal("value"));
             stockData.setFfmCap(rs.getBigDecimal("ffm_cap"));
             stockData.setNm52wH(rs.getBigDecimal("nm_52w_h"));
@@ -39,7 +37,7 @@ public class ClickhouseRepository {
         });
     }
 
-//    fetch data of a specific stock from stock_data using symbol
+    //    fetch data of a specific stock from stock_data using symbol
     public StockData findStockDataBySymbol(String symbol) {
         String sql = "SELECT symbol, prev_close, iep, chng, pct_chng, final, final_quantity, value, ffm_cap, nm_52w_h, nm_52w_l FROM stock_data WHERE LOWER(symbol) = LOWER(?)";
         List<StockData> result = jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
@@ -50,7 +48,7 @@ public class ClickhouseRepository {
             stockData.setChng(rs.getBigDecimal("chng"));
             stockData.setPctChng(rs.getBigDecimal("pct_chng"));
             stockData.setFinalPrice(rs.getBigDecimal("final"));
-            stockData.setFinalQuantity(rs.getInt("final_quantity"));
+            stockData.setFinalQuantity(rs.getBigDecimal("final_quantity"));  // Changed from rs.getInt() to rs.getBigDecimal()
             stockData.setValue(rs.getBigDecimal("value"));
             stockData.setFfmCap(rs.getBigDecimal("ffm_cap"));
             stockData.setNm52wH(rs.getBigDecimal("nm_52w_h"));
@@ -116,4 +114,45 @@ public class ClickhouseRepository {
         });
     }
 
-}
+    public CombinedStockDataDTO findCombinedDataBySymbol(String symbol) {
+        String sql = "SELECT \n" +
+                "    s.symbol AS s_symbol,\n" +
+                "    s.prev_close, \n" +
+                "    s.iep, \n" +
+                "    s.chng, \n" +
+                "    s.pct_chng, \n" +
+                "    s.final AS final_price, \n" +
+                "    s.final_quantity, \n" +
+                "    s.value, \n" +
+                "    s.ffm_cap, \n" +
+                "    s.nm_52w_h, \n" +
+                "    s.nm_52w_l,\n" +
+                "    t.traded_volume_lakhs, \n" +
+                "    t.traded_value_cr, \n" +
+                "    t.total_market_cap_cr, \n" +
+                "    t.free_float_market_cap_cr, \n" +
+                "    t.impact_cost, \n" +
+                "    t.percent_deliverable_traded_quantity, \n" +
+                "    t.applicable_margin_rate, \n" +
+                "    t.face_value, \n" +
+                "    p.week_52_high, \n" +
+                "    p.week_52_low, \n" +
+                "    p.upper_band, \n" +
+                "    p.lower_band, \n" +
+                "    p.price_band, \n" +
+                "    p.daily_volatility, \n" +
+                "    p.annualised_volatility, \n" +
+                "    p.tick_size\n" +
+                "FROM \n" +
+                "    stock_data s\n" +
+                "LEFT JOIN \n" +
+                "    trade_info t ON s.symbol = t.symbol\n" +
+                "LEFT JOIN \n" +
+                "    price_info p ON s.symbol = p.symbol\n" +
+                "WHERE \n" +
+                "    LOWER(s.symbol) = LOWER(?)\n";
+
+        // Execute the query with the symbol parameter
+        return jdbcTemplate.queryForObject(sql, new Object[]{symbol}, new CombinedStockDataDTORowMapper());
+    }
+    }
