@@ -8,33 +8,33 @@ import java.math.BigDecimal;
 @Table(name = "trade_info")
 public class TradeInfo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String trade_id;
 
-    private String symbol;
+    private String instrument_id;
     private BigDecimal tradedVolumeLakhs;
     private BigDecimal tradedValueCr;
     private BigDecimal totalMarketCapCr;
-    private BigDecimal freeFloatMarketCapCr;
+    private BigDecimal ffmCap;
     private BigDecimal impactCost;
     private BigDecimal percentDeliverableTradedQuantity;
     private BigDecimal applicableMarginRate;
     private BigDecimal faceValue;
 
-    public int getId() {
-        return id;
+    // Getters and Setters
+    public String getTrade_id() {
+        return trade_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTrade_id(String trade_id) {
+        this.trade_id = trade_id;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getInstrument_id() {
+        return instrument_id;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setInstrument_id(String instrument_id) {
+        this.instrument_id = instrument_id;
     }
 
     public BigDecimal getTradedVolumeLakhs() {
@@ -61,12 +61,12 @@ public class TradeInfo {
         this.totalMarketCapCr = totalMarketCapCr;
     }
 
-    public BigDecimal getFreeFloatMarketCapCr() {
-        return freeFloatMarketCapCr;
+    public BigDecimal getFfmCap() {
+        return ffmCap;
     }
 
-    public void setFreeFloatMarketCapCr(BigDecimal freeFloatMarketCapCr) {
-        this.freeFloatMarketCapCr = freeFloatMarketCapCr;
+    public void setFfmCap(BigDecimal ffmCap) {
+        this.ffmCap = ffmCap;
     }
 
     public BigDecimal getImpactCost() {
