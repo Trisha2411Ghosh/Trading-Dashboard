@@ -71,17 +71,33 @@ This table stores detailed information about stock instruments, including key fi
 #### Table Ownership:
 - Owned by the `postgres` user.
 
-### 3. `trade_info`
-- **id**: Unique identifier for each trade record (integer, PRIMARY KEY, NOT NULL).
-- **symbol**: Unique identifier for each stock, referencing `stock_data.symbol` (character varying(15), NOT NULL).
-- **traded_volume_lakhs**: Volume of stocks traded (numeric).
-- **traded_value_cr**: Value of stocks traded (numeric).
-- **total_market_cap_cr**: Total market capitalization (numeric).
-- **ffm_cap**: Free float market capitalization (numeric).
-- **impact_cost**: Impact cost (numeric).
-- **percent_deliverable_traded_quantity**: Percentage of deliverable traded quantity (numeric).
-- **applicable_margin_rate**: Margin rate applicable (numeric).
-- **face_value**: Face value of the stock (numeric).
+### 3. `trade_info` Table Schema
+This table holds details about trades, including volume, value, market capitalization, and other trade-related metrics associated with each instrument.
+
+| Column Name                             | Data Type                | Description                                         |
+|-----------------------------------------|--------------------------|-----------------------------------------------------|
+| `trade_id`                              | `VARCHAR(6)`             | Unique identifier for each trade record (PrimayKey, |
+                                                                           NOT NULL, Default: `generate_trade_id()`)       |
+| `instrument_id`                         | `VARCHAR(255)`           | Identifier linking the trade to an instrument 
+                                                                       (Foreign Key, NOT NULL)                             |
+| `traded_volume_lakhs`                   | `NUMERIC(38,2)`          | Volume of the trade in lakhs                         |
+| `traded_value_cr`                       | `NUMERIC(38,2)`          | Value of the trade in crores                                                                   |
+| `total_market_cap_cr`                   | `NUMERIC(38,2)`          | Total market capitalization of the traded instrument 
+                                                                       in crores                                           |
+| `ffm_cap`                               | `NUMERIC(38,2)`          | Free-float market capitalization of the traded 
+                                                                        instrument                                         |
+| `impact_cost`                           | `NUMERIC(38,2)`          | Cost impact of the trade on the market price        |
+| `percent_deliverable_traded_quantity`   | `NUMERIC(38,2)`          | Percentage of the traded quantity that is 
+                                                                        deliverable                                        |
+| `applicable_margin_rate`                | `NUMERIC(38,2)`          | Margin rate applicable to the trade                 |
+| `face_value`                            | `NUMERIC(38,2)`          | Face value of the traded instrument                 |
+
+#### Constraints:
+- **Primary Key**: `trade_id`
+- **Foreign Key**: `instrument_id` references `instrument(instrument_id)`
+
+#### Table Ownership:
+- Owned by the `postgres` user.
 ## Setup Instructions
 
 1. **Create a Database**: If you haven't already, create a new PostgreSQL database for your project. You can do this using the `psql` command line or any PostgreSQL client tool like pgAdmin.
