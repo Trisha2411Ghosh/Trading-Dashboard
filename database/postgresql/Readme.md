@@ -77,18 +77,18 @@ This table holds details about trades, including volume, value, market capitaliz
 | Column Name                             | Data Type                | Description                                         |
 |-----------------------------------------|--------------------------|-----------------------------------------------------|
 | `trade_id`                              | `VARCHAR(6)`             | Unique identifier for each trade record (PrimayKey, |
-|                                         |                          | NOT NULL, Default: `generate_trade_id()`)           |
+                                                                     |  NOT NULL, Default: `generate_trade_id()`)          |
 | `instrument_id`                         | `VARCHAR(255)`           | Identifier linking the trade to an instrument       |
-|                                         |                          | (Foreign Key, NOT NULL)                             |
+                                                                     | (Foreign Key, NOT NULL)                             |
 | `traded_volume_lakhs`                   | `NUMERIC(38,2)`          | Volume of the trade in lakhs                        |
 | `traded_value_cr`                       | `NUMERIC(38,2)`          | Value of the trade in crores                        |
 | `total_market_cap_cr`                   | `NUMERIC(38,2)`          | Total market capitalization of the traded           |
-|                                         |                          | instrument in crores                                |
+                                                                     |  instrument in crores                               |
 | `ffm_cap`                               | `NUMERIC(38,2)`          | Free-float market capitalization of the traded      |
-|                                         |                          | instrument                                          |
+                                                                     | instrument                                          |
 | `impact_cost`                           | `NUMERIC(38,2)`          | Cost impact of the trade on the market price        |
 | `percent_deliverable_traded_quantity`   | `NUMERIC(38,2)`          | Percentage of the traded quantity that is           |
-|                                         |                          | deliverable                                         |
+                                                                     | deliverable                                         |
 | `applicable_margin_rate`                | `NUMERIC(38,2)`          | Margin rate applicable to the trade                 |
 | `face_value`                            | `NUMERIC(38,2)`          | Face value of the traded instrument                 |
 
