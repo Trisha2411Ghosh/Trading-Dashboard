@@ -15,23 +15,34 @@ The database is designed to store trading data. This document outlines the conte
 ## Database Schema
 
 The database consists of the following tables:
-### 1. `stock_data`
-- **symbol**: Unique identifier for each stock record (character varying(15), PRIMARY KEY, NOT NULL).
-- **prev_close**: Previous closing price of the stock (numeric(10,2)).
-- **iep**: Intraday estimated price (numeric(10,2)).
-- **chng**: Change in price (numeric(5,2)).
-- **pct_chng**: Percentage change in price (numeric(5,2)).
-- **final_value**: total value of trades for the stock at the end of the trading day..
-- **final_quantity**: Quantity of stocks traded (bigint).
-- **value**: Value of the stock (numeric(15,2)).
-- **ffm_cap**: Free-float market capitalization (numeric(15,2)).
-- **week_52_high**: Normalized 52-week high price (numeric(10,2)).
-- **week_52_low**: Normalized 52-week low price (numeric(10,2)).
-- **final_price**:The stock’s price at the end of the trading day (numeric(38,2)).
-- **day-high**:The highest price the stock reached during the trading day (numeric(38,2)).
-- **day-low:The lowest price the stock reached during the trading day (numeric(38,2)).
+### 1. `stock_data` Table Schema
 
-### `instruments` Table Schema
+This table stores real-time and historical data about stock performance, including trading prices, volumes, and other financial metrics.
+
+| Column Name             | Data Type                | Description                                                         |
+|-------------------------|--------------------------|---------------------------------------------------------------------|
+| `symbol`                | `VARCHAR(15)`            | Unique identifier for each stock record (Primary Key, NOT NULL)     |
+| `prev_close`            | `NUMERIC(10,2)`          | Previous closing price of the stock                                 |
+| `iep`                   | `NUMERIC(10,2)`          | Intraday estimated price                                            |
+| `chng`                  | `NUMERIC(5,2)`           | Change in price                                                     |
+| `pct_chng`              | `NUMERIC(5,2)`           | Percentage change in price                                          |
+| `final_value`           | `NUMERIC(15,2)`          | Total value of trades for the stock at the end of the trading day   |
+| `final_quantity`        | `BIGINT`                 | Quantity of stocks traded                                           |
+| `value`                 | `NUMERIC(15,2)`          | Value of the stock                                                  |
+| `ffm_cap`               | `NUMERIC(15,2)`          | Free-float market capitalization                                    |
+| `week_52_high`          | `NUMERIC(10,2)`          | Normalized 52-week high price                                       |
+| `week_52_low`           | `NUMERIC(10,2)`          | Normalized 52-week low price                                        |
+| `final_price`           | `NUMERIC(38,2)`          | The stock’s price at the end of the trading day                     |
+| `day_high`              | `NUMERIC(38,2)`          | The highest price the stock reached during the trading day          |
+| `day_low`               | `NUMERIC(38,2)`          | The lowest price the stock reached during the trading day           |
+
+#### Constraints:
+- **Primary Key**: `symbol`
+
+#### Table Ownership:
+- Owned by the `postgres` user.
+
+### 2`instruments` Table Schema
 
 This table stores detailed information about stock instruments, including key financial metrics, price range details, and additional information about the company.
 
