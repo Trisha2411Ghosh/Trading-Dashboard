@@ -8,7 +8,7 @@ This guide walks you through setting up a ClickHouse database in a Docker contai
 - **CSV Data Files**: The following files should be available in the project directory:
   - `stock_data.csv`
   - `trade_info.csv`
-  - `price_info.csv`
+  - `instrument.csv`
 - **SQL Files**:
   - `schema.sql` — contains the schema definitions for the tables.
   - `seed.sql` — contains SQL commands for seeding the tables with initial data.
@@ -25,7 +25,7 @@ COPY (SELECT * FROM stock_data)
 TO '/path/to/your/exported_stock_data.csv' 
 WITH (FORMAT CSV, HEADER);
 
-COPY (SELECT * FROM price_info) 
+COPY (SELECT * FROM instrument) 
 TO '/path/to/your/exported_price_info.csv' 
 WITH (FORMAT CSV, HEADER);
 
@@ -49,7 +49,7 @@ Copy the CSV files from your local machine into the container for data loading:
 ```bash
 docker cp ./stock_data.csv some-clickhouse-server:/tmp/stock_data.csv
 docker cp ./trade_info.csv some-clickhouse-server:/tmp/trade_info.csv
-docker cp ./price_info.csv some-clickhouse-server:/tmp/price_info.csv
+docker cp ./instrument.csv some-clickhouse-server:/tmp/price_info.csv
 ```
 
 ### 4. Access the ClickHouse Client
