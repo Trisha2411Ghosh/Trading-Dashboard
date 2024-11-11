@@ -31,16 +31,35 @@ The database consists of the following tables:
 - **day-high**:The highest price the stock reached during the trading day (numeric(38,2)).
 - **day-low:The lowest price the stock reached during the trading day (numeric(38,2)).
 
-### 2. `price_info`
-- **symbol**: Unique identifier for each company (text, PRIMARY KEY, NOT NULL).
-- **week_52_high**: Normalized 52-week high price (numeric(10,2)).
-- **week_52_low**: Normalized 52-week low price (numeric(10,2)).
-- **upper-band**:The upper threshold for the stock's trading price range (numeric(38,2)).
-- **lower-band**:The lower threshold for the stock's trading price range (numeric(38,2)).
-- **price-band**: A descriptive range or category for the stock's trading price(numeric(38,2))
-- **daily_volatility**: The stock's price fluctuation within a single trading day.(numeric(38,2))
-- **annualised_volatility**:Projected volatility of the stock over a one-year period (numeric(38,2)).
-- **tick_size**:The minimum price movement allowed for the stock (numeric(38,2)).
+### `instruments` Table Schema
+
+This table stores detailed information about stock instruments, including key financial metrics, price range details, and additional information about the company.
+
+| Column Name              | Data Type                | Description                                                        |
+|------------------------- |--------------------------|--------------------------------------------------------------------|
+| `instrument_id`          | `VARCHAR(255)`           | Unique identifier for each instrument (Primary Key, NOT NULL)      |
+| `week_52_high`           | `NUMERIC(10,2)`          | Normalized 52-week high price                                      |
+| `week_52_low`            | `NUMERIC(10,2)`          | Normalized 52-week low price                                       |
+| `upper_band`             | `NUMERIC(38,2)`          | Upper threshold for the stock's trading price range                |
+| `lower_band`             | `NUMERIC(38,2)`          | Lower threshold for the stock's trading price range                |
+| `price_band`             | `VARCHAR(255)`           | Descriptive range or category for the stock's trading price        |
+| `daily_volatility`       | `NUMERIC(38,2)`          | Stock's price fluctuation within a single trading day              |
+| `annualised_volatility`  | `NUMERIC(38,2)`          | Projected volatility of the stock over a one-year period           |
+| `tick_size`              | `NUMERIC(38,2)`          | Minimum price movement allowed for the stock                       |
+| `long_name`              | `VARCHAR(255)`           | Full company name                                                  |
+| `industry`               | `VARCHAR(255)`           | Industry category for the instrument                               |
+| `stock_exchange`         | `VARCHAR(255)`           | The stock exchange where the instrument is listed                  |
+| `pe_ratio`               | `NUMERIC(10,2)`          | Price-to-Earnings ratio for the instrument                         |
+| `dividend_yield`         | `NUMERIC(5,2)`           | Dividend yield of the stock                                        |
+| `roe`                    | `NUMERIC(5,2)`           | Return on equity ratio for the instrument                          |
+
+#### Constraints:
+- **Primary Key**: `instrument_id`
+- **Foreign Key**: `instrument_id` references `symbol` in `public.stock_data` table
+
+#### Table Ownership:
+- Owned by the `postgres` user.
+
 ### 3. `trade_info`
 - **id**: Unique identifier for each trade record (integer, PRIMARY KEY, NOT NULL).
 - **symbol**: Unique identifier for each stock, referencing `stock_data.symbol` (character varying(15), NOT NULL).
