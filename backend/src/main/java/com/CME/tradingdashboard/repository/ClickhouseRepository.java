@@ -1,9 +1,8 @@
-package com.CME.tradingdashboard.repository;
+package com.CME.backend.repository;
 
-//import com.CME.tradingdashboard.model.Company;
-import com.CME.tradingdashboard.model.PriceInfo;
-import com.CME.tradingdashboard.model.StockData;
-import com.CME.tradingdashboard.model.TradeInfo;
+import com.CME.backend.model.instrument;
+import com.CME.backend.model.StockData;
+import com.CME.backend.model.TradeInfo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -68,8 +67,8 @@ public class ClickhouseRepository {
         String sql = "SELECT * FROM trade_info WHERE LOWER(symbol) = LOWER(?)";
         List<TradeInfo>result =  jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
             TradeInfo tradeInfo = new TradeInfo();
-            tradeInfo.setId(rs.getInt("id"));
-            tradeInfo.setSymbol(rs.getString("symbol")); // Ensures symbol is set
+            tradeInfo.setTrade_id(rs.getString("trade_id"));
+            tradeInfo.setInstrument_id(rs.getString("symbol")); // Ensures symbol is set
             tradeInfo.setTradedVolumeLakhs(rs.getBigDecimal("traded_volume_lakhs"));
             tradeInfo.setTradedValueCr(rs.getBigDecimal("traded_value_cr"));
             tradeInfo.setTotalMarketCapCr(rs.getBigDecimal("total_market_cap_cr"));
@@ -86,23 +85,29 @@ public class ClickhouseRepository {
 
 
     // Fetch price info for a specific symbol
-    public PriceInfo findPriceInfoBySymbol(String symbol) {
-        String sql = "SELECT symbol, week_52_high, week_52_low, upper_band, lower_band, price_band, " +
-                "daily_volatility, annualised_volatility, tick_size " +
-                "FROM price_info WHERE LOWER(symbol) = LOWER(?)";
+    public instrument findInstrumentInfoBySymbol(String symbol) {
+        String sql = "SELECT instrument_id, week_52_high, week_52_low, upper_band, lower_band, price_band, " +
+                "daily_volatility, annualised_volatility, tick_size ,long_name,industry,stock_exchange,pe_ratio,dividend_yield,roe" +
+                "FROM instrument WHERE LOWER(symbol) = LOWER(?)";
 
-        List<PriceInfo> result = jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
-            PriceInfo priceInfo = new PriceInfo();
-            priceInfo.setSymbol(rs.getString("symbol"));
-            priceInfo.setWeek52High(rs.getBigDecimal("week_52_high"));
-            priceInfo.setWeek52Low(rs.getBigDecimal("week_52_low"));
-            priceInfo.setUpperBand(rs.getBigDecimal("upper_band"));
-            priceInfo.setLowerBand(rs.getBigDecimal("lower_band"));
-            priceInfo.setPriceBand(rs.getString("price_band"));
-            priceInfo.setDailyVolatility(rs.getBigDecimal("daily_volatility"));
-            priceInfo.setAnnualisedVolatility(rs.getBigDecimal("annualised_volatility"));
-            priceInfo.setTickSize(rs.getBigDecimal("tick_size"));
-            return priceInfo;
+        List<instrument> result = jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
+            instrument ins = new instrument();
+            ins.setInstrument_id(rs.getString("instrument_id"));
+            ins.setWeek52High(rs.getBigDecimal("week_52_high"));
+            ins.setWeek52Low(rs.getBigDecimal("week_52_low"));
+            ins.setUpperBand(rs.getBigDecimal("upper_band"));
+            ins.setLowerBand(rs.getBigDecimal("lower_band"));
+            ins.setPriceBand(rs.getString("price_band"));
+            ins.setDailyVolatility(rs.getBigDecimal("daily_volatility"));
+            ins.setAnnualisedVolatility(rs.getBigDecimal("annualised_volatility"));
+            ins.setTickSize(rs.getBigDecimal("tick_size"));
+            ins.setLongName(rs.getString("long_name")); // New column
+            ins.setIndustry(rs.getString("industry")); // New column
+            ins.setStockExchange(rs.getString("stock_exchange")); // New column
+            ins.setPeRatio(rs.getBigDecimal("pe_ratio")); // New column
+            ins.setDividendYield(rs.getBigDecimal("dividend_yield")); // New column
+            ins.setRoe(rs.getBigDecimal("roe")); // New column
+            return ins;
         });
 
         return result.isEmpty() ? null : result.get(0);
