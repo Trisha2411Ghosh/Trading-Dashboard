@@ -1,7 +1,9 @@
 package com.CME.backend.controller;
 
 import com.CME.backend.dto.CombinedStockDataDTO;
-import com.CME.backend.model.*;
+import com.CME.backend.model.Instrument;
+import com.CME.backend.model.StockData;
+import com.CME.backend.model.TradeInfo;
 import com.CME.backend.service.TradingService;
 import com.CME.backend.util.PerformanceMetrics;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,8 +32,6 @@ public class TradingController {
         List<StockData> stockData = tradingService.getAllStockData(dbsource);
         long dataSize = calculateDataSize(stockData);
         performanceMetrics.endQuery(dataSize);
-
-        // Prepare response with data and performance metrics
         Map<String, Object> response = new HashMap<>();
         response.put("data", stockData);
         response.put("performanceMetrics", getPerformanceMetrics());
@@ -47,8 +47,6 @@ public class TradingController {
         StockData stockData = tradingService.getStockDataBySymbol(symbol, dbsource);
         long dataSize = calculateDataSize(stockData);
         performanceMetrics.endQuery(dataSize);
-
-        // Prepare response with data and performance metrics
         Map<String, Object> response = new HashMap<>();
         response.put("data", stockData);
         response.put("performanceMetrics", getPerformanceMetrics());
@@ -61,11 +59,9 @@ public class TradingController {
     public ResponseEntity<Map<String, Object>> getTradeInfo(@PathVariable String symbol,
                                                             @RequestParam(defaultValue = "postgres") String dbsource) {
         performanceMetrics.startSession();
-        TradeInfo tradeInfo = tradingService.getTradeInfoBySymbol(symbol, dbsource);
+        List<TradeInfo> tradeInfo = tradingService.getTradeInfoBySymbol(symbol, dbsource);
         long dataSize = calculateDataSize(tradeInfo);
         performanceMetrics.endQuery(dataSize);
-
-        // Prepare response with data and performance metrics
         Map<String, Object> response = new HashMap<>();
         response.put("data", tradeInfo);
         response.put("performanceMetrics", getPerformanceMetrics());
@@ -73,35 +69,16 @@ public class TradingController {
         return ResponseEntity.ok(response);
     }
 
-    // Endpoint to fetch specific price information for a symbol
-    @GetMapping("/prices/{symbol}")
-    public ResponseEntity<Map<String, Object>> getPriceInfo(@PathVariable String symbol,
-                                                            @RequestParam(defaultValue = "postgres") String dbsource) {
+    // Endpoint to fetch specific instrument information for a symbol
+    @GetMapping("/instruments/{instrumentId}")
+    public ResponseEntity<Map<String, Object>> getInstrumentInfo(@PathVariable String instrumentId,
+                                                                 @RequestParam(defaultValue = "postgres") String dbsource) {
         performanceMetrics.startSession();
-        PriceInfo priceInfo = tradingService.getPriceInfoBySymbol(symbol, dbsource);
-        long dataSize = calculateDataSize(priceInfo);
+        Instrument instrumentInfo = tradingService.getInstrumentById(instrumentId,dbsource);
+        long dataSize = calculateDataSize(instrumentInfo);
         performanceMetrics.endQuery(dataSize);
-
-        // Prepare response with data and performance metrics
         Map<String, Object> response = new HashMap<>();
-        response.put("data", priceInfo);
-        response.put("performanceMetrics", getPerformanceMetrics());
-
-        return ResponseEntity.ok(response);
-    }
-
-    // Endpoint to fetch specific company information for a symbol
-    @GetMapping("/companies/{symbol}")
-    public ResponseEntity<Map<String, Object>> getCompanyInfo(@PathVariable String symbol,
-                                                              @RequestParam(defaultValue = "postgres") String dbsource) {
-        performanceMetrics.startSession();
-        Company companyInfo = tradingService.getCompanyInfo(symbol, dbsource);
-        long dataSize = calculateDataSize(companyInfo);
-        performanceMetrics.endQuery(dataSize);
-
-        // Prepare response with data and performance metrics
-        Map<String, Object> response = new HashMap<>();
-        response.put("data", companyInfo);
+        response.put("data", instrumentInfo);
         response.put("performanceMetrics", getPerformanceMetrics());
 
         return ResponseEntity.ok(response);
@@ -109,15 +86,12 @@ public class TradingController {
 
     // Endpoint to fetch combined data for a symbol
     @GetMapping("/combined/{symbol}")
-    public ResponseEntity<Map<String, Object>> getCombinedData(
-            @PathVariable String symbol,
-            @RequestParam(defaultValue = "postgres") String dbsource) {
+    public ResponseEntity<Map<String, Object>> getCombinedData(@PathVariable String symbol,
+                                                               @RequestParam(defaultValue = "postgres") String dbsource) {
         performanceMetrics.startSession();
-        CombinedStockDataDTO combinedData = tradingService.getCombinedDataBySymbol(symbol, dbsource);
+        List<CombinedStockDataDTO> combinedData = tradingService.getCombinedDataBySymbol(symbol, dbsource);
         long dataSize = calculateDataSize(combinedData);
         performanceMetrics.endQuery(dataSize);
-
-        // Prepare response with data and performance metrics
         Map<String, Object> response = new HashMap<>();
         response.put("data", combinedData);
         response.put("performanceMetrics", getPerformanceMetrics());

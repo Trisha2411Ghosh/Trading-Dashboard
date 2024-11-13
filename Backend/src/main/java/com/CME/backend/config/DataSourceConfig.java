@@ -1,5 +1,6 @@
 package com.CME.backend.config;
 
+import com.CME.backend.repository.CombinedDataRepository;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +25,19 @@ public class DataSourceConfig {
         return DataSourceBuilder.create().build();
     }
 
+    @Bean(name = "postgresJdbcTemplate")
+    @Primary
+    public JdbcTemplate postgresJdbcTemplate() {
+        return new JdbcTemplate(postgresDataSource());
+    }
+
     @Bean(name = "clickhouseJdbcTemplate")
     public JdbcTemplate clickhouseJdbcTemplate() {
         return new JdbcTemplate(clickhouseDataSource());
+    }
+
+    @Bean
+    public CombinedDataRepository combinedDataRepository(JdbcTemplate postgresJdbcTemplate) {
+        return new CombinedDataRepository(postgresJdbcTemplate);
     }
 }

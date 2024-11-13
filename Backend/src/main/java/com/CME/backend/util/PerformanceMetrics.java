@@ -22,11 +22,6 @@ public class PerformanceMetrics {
         return endTime - startTime;
     }
 
-//    public double getQueriesPerSecond() {
-//        long elapsedTimeInSeconds = (endTime - startTime) / 1000;
-//        return (elapsedTimeInSeconds > 0) ? (double) queryCount / elapsedTimeInSeconds : queryCount;
-//    }
-
     public double getThroughput() {
         long elapsedTimeInMillis = endTime - startTime;
         return (elapsedTimeInMillis > 0) ? (double) totalBytesProcessed / (elapsedTimeInMillis / 1000.0) : 0;

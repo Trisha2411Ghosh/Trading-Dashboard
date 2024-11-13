@@ -1,40 +1,61 @@
 package com.CME.backend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "trade_info")
 public class TradeInfo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    private String symbol;
+    @Id
+    @Column(name = "trade_id")
+    private String tradeId;
+
+    @Column(name = "instrument_id")
+    private String instrumentId;
+
+    @Column(name = "traded_volume_lakhs")
     private BigDecimal tradedVolumeLakhs;
+
+    @Column(name = "traded_value_cr")
     private BigDecimal tradedValueCr;
+
+    @Column(name = "total_market_cap_cr")
     private BigDecimal totalMarketCapCr;
-    private BigDecimal freeFloatMarketCapCr;
+
+    @Column(name = "ffm_cap")
+    private BigDecimal ffmCap;
+
+    @Column(name = "impact_cost")
     private BigDecimal impactCost;
+
+    @Column(name = "percent_deliverable_traded_quantity")
     private BigDecimal percentDeliverableTradedQuantity;
+
+    @Column(name = "applicable_margin_rate")
     private BigDecimal applicableMarginRate;
+
+    @Column(name = "face_value")
     private BigDecimal faceValue;
 
-    public int getId() {
-        return id;
+    public String getTradeId() {
+        return tradeId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTradeId(String tradeId) {
+        this.tradeId = tradeId;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getInstrumentId() {
+        return instrumentId;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setInstrumentId(String instrumentId) {
+        this.instrumentId = instrumentId;
     }
 
     public BigDecimal getTradedVolumeLakhs() {
@@ -61,12 +82,12 @@ public class TradeInfo {
         this.totalMarketCapCr = totalMarketCapCr;
     }
 
-    public BigDecimal getFreeFloatMarketCapCr() {
-        return freeFloatMarketCapCr;
+    public BigDecimal getFfmCap() {
+        return ffmCap;
     }
 
-    public void setFreeFloatMarketCapCr(BigDecimal freeFloatMarketCapCr) {
-        this.freeFloatMarketCapCr = freeFloatMarketCapCr;
+    public void setFfmCap(BigDecimal ffmCap) {
+        this.ffmCap = ffmCap;
     }
 
     public BigDecimal getImpactCost() {

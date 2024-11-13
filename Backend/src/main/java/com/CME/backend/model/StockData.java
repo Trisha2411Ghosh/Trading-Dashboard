@@ -11,22 +11,47 @@ import java.math.BigDecimal;
 @Table(name = "stock_data")
 public class StockData {
     @Id
+    @Column(name = "symbol")
     private String symbol;
 
+    @Column(name = "prev_close")
     private BigDecimal prevClose;
+
+    @Column(name = "iep")
     private BigDecimal iep;
+
+    @Column(name = "chng")
     private BigDecimal chng;
+
+    @Column(name = "pct_chng")
     private BigDecimal pctChng;
-    private BigDecimal finalPrice;
-    private BigDecimal finalQuantity;
+
+    @Column(name = "final_value")
+    private BigDecimal finalValue;
+
+    @Column(name = "final_quantity")
+    private Integer finalQuantity;
+
+    @Column(name = "value")
     private BigDecimal value;
+
+    @Column(name = "ffm_cap")
     private BigDecimal ffmCap;
 
-    @Column(name = "nm_52w_h")
-    private BigDecimal nm52wH;
+    @Column(name = "week_52_high")
+    private BigDecimal week52High;
 
-    @Column(name = "nm_52w_l")
-    private BigDecimal nm52wL;
+    @Column(name = "week_52_low")
+    private BigDecimal week52Low;
+
+    @Column(name = "final_price")
+    private BigDecimal finalPrice;
+
+    @Column(name = "day_high")
+    private BigDecimal dayHigh;
+
+    @Column(name = "day_low")
+    private BigDecimal dayLow;
 
     public String getSymbol() {
         return symbol;
@@ -68,19 +93,19 @@ public class StockData {
         this.pctChng = pctChng;
     }
 
-    public BigDecimal getFinalPrice() {
-        return finalPrice;
+    public BigDecimal getFinalValue() {
+        return finalValue;
     }
 
-    public void setFinalPrice(BigDecimal finalPrice) {
-        this.finalPrice = finalPrice;
+    public void setFinalValue(BigDecimal finalValue) {
+        this.finalValue = finalValue;
     }
 
-    public BigDecimal getFinalQuantity() {
+    public Integer getFinalQuantity() {
         return finalQuantity;
     }
 
-    public void setFinalQuantity(BigDecimal finalQuantity) {
+    public void setFinalQuantity(Integer finalQuantity) {
         this.finalQuantity = finalQuantity;
     }
 
@@ -100,19 +125,45 @@ public class StockData {
         this.ffmCap = ffmCap;
     }
 
-    public BigDecimal getNm52wH() {
-        return nm52wH;
+    public BigDecimal getWeek52High() {
+        return week52High;
     }
 
-    public void setNm52wH(BigDecimal nm52wH) {
-        this.nm52wH = nm52wH;
+    public void setWeek52High(BigDecimal week52High) {
+        this.week52High = week52High;
     }
 
-    public BigDecimal getNm52wL() {
-        return nm52wL;
+    public BigDecimal getWeek52Low() {
+        return week52Low;
     }
 
-    public void setNm52wL(BigDecimal nm52wL) {
-        this.nm52wL = nm52wL;
+    public void setWeek52Low(BigDecimal week52Low) {
+        this.week52Low = week52Low;
     }
+
+    public BigDecimal getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(BigDecimal finalPrice) {
+        this.finalPrice = finalPrice;
+    }
+
+    public BigDecimal getDayHigh() {
+        return dayHigh;
+    }
+
+    public void setDayHigh(BigDecimal dayHigh) {
+        this.dayHigh = dayHigh;
+    }
+
+    public BigDecimal getDayLow() {
+        return dayLow;
+    }
+
+    public void setDayLow(BigDecimal dayLow) {
+        this.dayLow = dayLow;
+    }
+
+
 }

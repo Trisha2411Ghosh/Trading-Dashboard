@@ -8,29 +8,62 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "price_info")
-public class PriceInfo {
+@Table(name = "instrument")
+public class Instrument {
+
     @Id
-    private String symbol;
+    @Column(name = "instrument_id")
+    private String instrumentId;
 
     @Column(name = "week_52_high")
     private BigDecimal week52High;
 
     @Column(name = "week_52_low")
     private BigDecimal week52Low;
+
+    @Column(name = "upper_band")
     private BigDecimal upperBand;
+
+    @Column(name = "lower_band")
     private BigDecimal lowerBand;
+
+    @Column(name = "price_band")
     private String priceBand;
+
+    @Column(name = "daily_volatility")
     private BigDecimal dailyVolatility;
+
+    @Column(name = "annualised_volatility")
     private BigDecimal annualisedVolatility;
+
+    @Column(name = "tick_size")
     private BigDecimal tickSize;
 
-    public String getSymbol() {
-        return symbol;
+    @Column(name = "long_name")
+    private String longName;
+
+    @Column(name = "industry")
+    private String industry;
+
+    @Column(name = "stock_exchange")
+    private String stockExchange;
+
+    @Column(name = "pe_ratio")
+    private BigDecimal peRatio;
+
+    @Column(name = "dividend_yield")
+    private BigDecimal dividendYield;
+
+    @Column(name = "roe")
+    private BigDecimal roe;
+
+    // Getters and Setters
+    public String getInstrumentId() {
+        return instrumentId;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setInstrumentId(String instrumentId) {
+        this.instrumentId = instrumentId;
     }
 
     public BigDecimal getWeek52High() {
@@ -95,5 +128,53 @@ public class PriceInfo {
 
     public void setTickSize(BigDecimal tickSize) {
         this.tickSize = tickSize;
+    }
+
+    public String getLongName() {
+        return longName;
+    }
+
+    public void setLongName(String longName) {
+        this.longName = longName;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getStockExchange() {
+        return stockExchange;
+    }
+
+    public void setStockExchange(String stockExchange) {
+        this.stockExchange = stockExchange;
+    }
+
+    public BigDecimal getPeRatio() {
+        return peRatio;
+    }
+
+    public void setPeRatio(BigDecimal peRatio) {
+        this.peRatio = peRatio;
+    }
+
+    public BigDecimal getDividendYield() {
+        return dividendYield;
+    }
+
+    public void setDividendYield(BigDecimal dividendYield) {
+        this.dividendYield = dividendYield;
+    }
+
+    public BigDecimal getRoe() {
+        return roe;
+    }
+
+    public void setRoe(BigDecimal roe) {
+        this.roe = roe;
     }
 }

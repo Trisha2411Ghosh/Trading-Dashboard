@@ -1,73 +1,96 @@
 package com.CME.backend.dto;
 
+import com.CME.backend.model.Instrument;
+import com.CME.backend.model.StockData;
+import com.CME.backend.model.TradeInfo;
+
 import java.math.BigDecimal;
 
 public class CombinedStockDataDTO {
-    // Stock Data fields
-    private String symbol;
-    private BigDecimal prevClose;
-    private BigDecimal iep;
-    private BigDecimal chng;
-    private BigDecimal pctChng;
-    private BigDecimal finalPrice;
-    private BigDecimal finalQuantity;
-    private BigDecimal value;
-    private BigDecimal ffmCap;
-    private BigDecimal nm52wH;
-    private BigDecimal nm52wL;
+        private String symbol;
+        private BigDecimal prevClose;
+        private BigDecimal iep;
+        private BigDecimal chng;
+        private BigDecimal pctChng;
+        private BigDecimal finalValue;
+        private Integer finalQuantity;
+        private BigDecimal value;
+        private BigDecimal ffmCap;
+        private BigDecimal week52High;
+        private BigDecimal week52Low;
+        private BigDecimal finalPrice;
+        private BigDecimal dayHigh;
+        private BigDecimal dayLow;
 
-    // Trade Info fields
-    private BigDecimal tradedVolumeLakhs;
-    private BigDecimal tradedValueCr;
-    private BigDecimal totalMarketCapCr;
-    private BigDecimal freeFloatMarketCapCr;
-    private BigDecimal impactCost;
-    private BigDecimal percentDeliverableTradedQuantity;
-    private BigDecimal applicableMarginRate;
-    private BigDecimal faceValue;
+        // Instrument related fields
+        private BigDecimal upperBand;
+        private BigDecimal lowerBand;
+        private String priceBand;
+        private BigDecimal dailyVolatility;
+        private BigDecimal annualisedVolatility;
+        private BigDecimal tickSize;
+        private String longName;
+        private String industry;
+        private String stockExchange;
+        private BigDecimal peRatio;
+        private BigDecimal dividendYield;
+        private BigDecimal roe;
 
-    // Price Info fields
-    private BigDecimal week52High;
-    private BigDecimal week52Low;
-    private BigDecimal upperBand;
-    private BigDecimal lowerBand;
-    private String priceBand;
-    private BigDecimal dailyVolatility;
-    private BigDecimal annualisedVolatility;
-    private BigDecimal tickSize;
+        // Trade Info fields
+        private String tradeId;
+        private BigDecimal percentDeliverableTradedQuantity;
+        private BigDecimal applicableMarginRate;
+        private BigDecimal faceValue;
+        private String instrumentId;
+        private BigDecimal tradedVolumeLakhs;
+        private BigDecimal tradedValueCr;
+        private BigDecimal totalMarketCapCr;
+        private BigDecimal impactCost;
 
-    public CombinedStockDataDTO(){}
 
-    public CombinedStockDataDTO(String symbol, BigDecimal prevClose, BigDecimal iep, BigDecimal chng, BigDecimal pctChng, BigDecimal finalPrice, BigDecimal finalQuantity, BigDecimal value, BigDecimal ffmCap, BigDecimal nm52wH, BigDecimal nm52wL, BigDecimal tradedVolumeLakhs, BigDecimal tradedValueCr, BigDecimal totalMarketCapCr, BigDecimal freeFloatMarketCapCr, BigDecimal impactCost, BigDecimal percentDeliverableTradedQuantity, BigDecimal applicableMarginRate, BigDecimal faceValue, BigDecimal week52High, BigDecimal week52Low, BigDecimal upperBand, BigDecimal lowerBand, String priceBand, BigDecimal dailyVolatility, BigDecimal annualisedVolatility, BigDecimal tickSize) {
-        this.symbol = symbol;
-        this.prevClose = prevClose;
-        this.iep = iep;
-        this.chng = chng;
-        this.pctChng = pctChng;
-        this.finalPrice = finalPrice;
-        this.finalQuantity = finalQuantity;
-        this.value = value;
-        this.ffmCap = ffmCap;
-        this.nm52wH = nm52wH;
-        this.nm52wL = nm52wL;
-        this.tradedVolumeLakhs = tradedVolumeLakhs;
-        this.tradedValueCr = tradedValueCr;
-        this.totalMarketCapCr = totalMarketCapCr;
-        this.freeFloatMarketCapCr = freeFloatMarketCapCr;
-        this.impactCost = impactCost;
-        this.percentDeliverableTradedQuantity = percentDeliverableTradedQuantity;
-        this.applicableMarginRate = applicableMarginRate;
-        this.faceValue = faceValue;
-        this.week52High = week52High;
-        this.week52Low = week52Low;
-        this.upperBand = upperBand;
-        this.lowerBand = lowerBand;
-        this.priceBand = priceBand;
-        this.dailyVolatility = dailyVolatility;
-        this.annualisedVolatility = annualisedVolatility;
-        this.tickSize = tickSize;
+    public CombinedStockDataDTO() {
     }
 
+    // Constructor combining all fields
+        public CombinedStockDataDTO(StockData stockData, Instrument instrument, TradeInfo tradeInfo) {
+            this.symbol = stockData.getSymbol();
+            this.prevClose = stockData.getPrevClose();
+            this.iep = stockData.getIep();
+            this.chng = stockData.getChng();
+            this.pctChng = stockData.getPctChng();
+            this.finalValue = stockData.getFinalValue();
+            this.finalQuantity = stockData.getFinalQuantity();
+            this.value = stockData.getValue();
+            this.ffmCap = stockData.getFfmCap();
+            this.week52High = stockData.getWeek52High();
+            this.week52Low = stockData.getWeek52Low();
+            this.finalPrice = stockData.getFinalPrice();
+            this.dayHigh = stockData.getDayHigh();
+            this.dayLow = stockData.getDayLow();
+
+            this.upperBand = instrument.getUpperBand();
+            this.lowerBand = instrument.getLowerBand();
+            this.priceBand = instrument.getPriceBand();
+            this.dailyVolatility = instrument.getDailyVolatility();
+            this.annualisedVolatility = instrument.getAnnualisedVolatility();
+            this.tickSize = instrument.getTickSize();
+            this.longName = instrument.getLongName();
+            this.industry = instrument.getIndustry();
+            this.stockExchange = instrument.getStockExchange();
+            this.peRatio = instrument.getPeRatio();
+            this.dividendYield = instrument.getDividendYield();
+            this.roe = instrument.getRoe();
+
+            this.tradeId = tradeInfo.getTradeId();
+            this.percentDeliverableTradedQuantity = tradeInfo.getPercentDeliverableTradedQuantity();
+            this.applicableMarginRate = tradeInfo.getApplicableMarginRate();
+            this.faceValue = tradeInfo.getFaceValue();
+            this.instrumentId = instrument.getInstrumentId();
+            this.tradedVolumeLakhs = tradeInfo.getTradedVolumeLakhs();
+            this.tradedValueCr = tradeInfo.getTradedValueCr();
+            this.totalMarketCapCr = tradeInfo.getTotalMarketCapCr();
+            this.impactCost = tradeInfo.getImpactCost();
+        }
 
     public String getSymbol() {
         return symbol;
@@ -109,19 +132,19 @@ public class CombinedStockDataDTO {
         this.pctChng = pctChng;
     }
 
-    public BigDecimal getFinalPrice() {
-        return finalPrice;
+    public BigDecimal getFinalValue() {
+        return finalValue;
     }
 
-    public void setFinalPrice(BigDecimal finalPrice) {
-        this.finalPrice = finalPrice;
+    public void setFinalValue(BigDecimal finalValue) {
+        this.finalValue = finalValue;
     }
 
-    public BigDecimal getFinalQuantity() {
+    public Integer getFinalQuantity() {
         return finalQuantity;
     }
 
-    public void setFinalQuantity(BigDecimal finalQuantity) {
+    public void setFinalQuantity(Integer finalQuantity) {
         this.finalQuantity = finalQuantity;
     }
 
@@ -141,86 +164,6 @@ public class CombinedStockDataDTO {
         this.ffmCap = ffmCap;
     }
 
-    public BigDecimal getNm52wH() {
-        return nm52wH;
-    }
-
-    public void setNm52wH(BigDecimal nm52wH) {
-        this.nm52wH = nm52wH;
-    }
-
-    public BigDecimal getNm52wL() {
-        return nm52wL;
-    }
-
-    public void setNm52wL(BigDecimal nm52wL) {
-        this.nm52wL = nm52wL;
-    }
-
-    public BigDecimal getTradedVolumeLakhs() {
-        return tradedVolumeLakhs;
-    }
-
-    public void setTradedVolumeLakhs(BigDecimal tradedVolumeLakhs) {
-        this.tradedVolumeLakhs = tradedVolumeLakhs;
-    }
-
-    public BigDecimal getTradedValueCr() {
-        return tradedValueCr;
-    }
-
-    public void setTradedValueCr(BigDecimal tradedValueCr) {
-        this.tradedValueCr = tradedValueCr;
-    }
-
-    public BigDecimal getTotalMarketCapCr() {
-        return totalMarketCapCr;
-    }
-
-    public void setTotalMarketCapCr(BigDecimal totalMarketCapCr) {
-        this.totalMarketCapCr = totalMarketCapCr;
-    }
-
-    public BigDecimal getFreeFloatMarketCapCr() {
-        return freeFloatMarketCapCr;
-    }
-
-    public void setFreeFloatMarketCapCr(BigDecimal freeFloatMarketCapCr) {
-        this.freeFloatMarketCapCr = freeFloatMarketCapCr;
-    }
-
-    public BigDecimal getImpactCost() {
-        return impactCost;
-    }
-
-    public void setImpactCost(BigDecimal impactCost) {
-        this.impactCost = impactCost;
-    }
-
-    public BigDecimal getPercentDeliverableTradedQuantity() {
-        return percentDeliverableTradedQuantity;
-    }
-
-    public void setPercentDeliverableTradedQuantity(BigDecimal percentDeliverableTradedQuantity) {
-        this.percentDeliverableTradedQuantity = percentDeliverableTradedQuantity;
-    }
-
-    public BigDecimal getApplicableMarginRate() {
-        return applicableMarginRate;
-    }
-
-    public void setApplicableMarginRate(BigDecimal applicableMarginRate) {
-        this.applicableMarginRate = applicableMarginRate;
-    }
-
-    public BigDecimal getFaceValue() {
-        return faceValue;
-    }
-
-    public void setFaceValue(BigDecimal faceValue) {
-        this.faceValue = faceValue;
-    }
-
     public BigDecimal getWeek52High() {
         return week52High;
     }
@@ -235,6 +178,30 @@ public class CombinedStockDataDTO {
 
     public void setWeek52Low(BigDecimal week52Low) {
         this.week52Low = week52Low;
+    }
+
+    public BigDecimal getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(BigDecimal finalPrice) {
+        this.finalPrice = finalPrice;
+    }
+
+    public BigDecimal getDayHigh() {
+        return dayHigh;
+    }
+
+    public void setDayHigh(BigDecimal dayHigh) {
+        this.dayHigh = dayHigh;
+    }
+
+    public BigDecimal getDayLow() {
+        return dayLow;
+    }
+
+    public void setDayLow(BigDecimal dayLow) {
+        this.dayLow = dayLow;
     }
 
     public BigDecimal getUpperBand() {
@@ -283,5 +250,104 @@ public class CombinedStockDataDTO {
 
     public void setTickSize(BigDecimal tickSize) {
         this.tickSize = tickSize;
+    }
+
+    public String getLongName() {
+        return longName;
+    }
+
+    public void setLongName(String longName) {
+        this.longName = longName;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getStockExchange() {
+        return stockExchange;
+    }
+
+    public void setStockExchange(String stockExchange) {
+        this.stockExchange = stockExchange;
+    }
+
+    public BigDecimal getPeRatio() {
+        return peRatio;
+    }
+
+    public void setPeRatio(BigDecimal peRatio) {
+        this.peRatio = peRatio;
+    }
+
+    public BigDecimal getDividendYield() {
+        return dividendYield;
+    }
+
+    public void setDividendYield(BigDecimal dividendYield) {
+        this.dividendYield = dividendYield;
+    }
+
+    public BigDecimal getRoe() {
+        return roe;
+    }
+
+    public void setRoe(BigDecimal roe) {
+        this.roe = roe;
+    }
+
+    public String getTradeId() { return tradeId; }
+    public void setTradeId(String tradeId) { this.tradeId = tradeId; }
+
+    public BigDecimal getPercentDeliverableTradedQuantity() { return percentDeliverableTradedQuantity; }
+    public void setPercentDeliverableTradedQuantity(BigDecimal percentDeliverableTradedQuantity) {
+        this.percentDeliverableTradedQuantity = percentDeliverableTradedQuantity;
+    }
+
+    public BigDecimal getApplicableMarginRate() { return applicableMarginRate; }
+    public void setApplicableMarginRate(BigDecimal applicableMarginRate) {
+        this.applicableMarginRate = applicableMarginRate;
+    }
+
+    public BigDecimal getFaceValue() { return faceValue; }
+    public void setFaceValue(BigDecimal faceValue) { this.faceValue = faceValue; }
+
+    public String getInstrumentId() { return instrumentId; }
+    public void setInstrumentId(String instrumentId) { this.instrumentId = instrumentId; }
+
+    public BigDecimal getTradedVolumeLakhs() {
+        return tradedVolumeLakhs;
+    }
+
+    public void setTradedVolumeLakhs(BigDecimal tradedVolumeLakhs) {
+        this.tradedVolumeLakhs = tradedVolumeLakhs;
+    }
+
+    public BigDecimal getTradedValueCr() {
+        return tradedValueCr;
+    }
+
+    public void setTradedValueCr(BigDecimal tradedValueCr) {
+        this.tradedValueCr = tradedValueCr;
+    }
+
+    public BigDecimal getTotalMarketCapCr() {
+        return totalMarketCapCr;
+    }
+
+    public void setTotalMarketCapCr(BigDecimal totalMarketCapCr) {
+        this.totalMarketCapCr = totalMarketCapCr;
+    }
+
+    public BigDecimal getImpactCost() {
+        return impactCost;
+    }
+
+    public void setImpactCost(BigDecimal impactCost) {
+        this.impactCost = impactCost;
     }
 }
