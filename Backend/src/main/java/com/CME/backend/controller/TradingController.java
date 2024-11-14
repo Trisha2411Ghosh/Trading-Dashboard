@@ -27,7 +27,7 @@ public class TradingController {
 
     // Endpoint to fetch all stock data
     @GetMapping("/stocks")
-    public ResponseEntity<Map<String, Object>> getAllStockData(@RequestParam(defaultValue = "postgres") String dbsource) {
+    public ResponseEntity<Map<String, Object>> getAllStockData(@RequestParam String dbsource) {
         performanceMetrics.startSession();
         List<StockData> stockData = tradingService.getAllStockData(dbsource);
         long dataSize = calculateDataSize(stockData);
@@ -42,7 +42,7 @@ public class TradingController {
     // Endpoint to fetch specific stock data by symbol
     @GetMapping("/stocks/{symbol}")
     public ResponseEntity<Map<String, Object>> getStockData(@PathVariable String symbol,
-                                                            @RequestParam(defaultValue = "postgres") String dbsource) {
+                                                            @RequestParam String dbsource) {
         performanceMetrics.startSession();
         StockData stockData = tradingService.getStockDataBySymbol(symbol, dbsource);
         long dataSize = calculateDataSize(stockData);
@@ -57,7 +57,7 @@ public class TradingController {
     // Endpoint to fetch specific trade information for a symbol
     @GetMapping("/trades/{symbol}")
     public ResponseEntity<Map<String, Object>> getTradeInfo(@PathVariable String symbol,
-                                                            @RequestParam(defaultValue = "postgres") String dbsource) {
+                                                            @RequestParam String dbsource) {
         performanceMetrics.startSession();
         List<TradeInfo> tradeInfo = tradingService.getTradeInfoBySymbol(symbol, dbsource);
         long dataSize = calculateDataSize(tradeInfo);
@@ -72,7 +72,7 @@ public class TradingController {
     // Endpoint to fetch specific instrument information for a symbol
     @GetMapping("/instruments/{instrumentId}")
     public ResponseEntity<Map<String, Object>> getInstrumentInfo(@PathVariable String instrumentId,
-                                                                 @RequestParam(defaultValue = "postgres") String dbsource) {
+                                                                 @RequestParam String dbsource) {
         performanceMetrics.startSession();
         Instrument instrumentInfo = tradingService.getInstrumentById(instrumentId,dbsource);
         long dataSize = calculateDataSize(instrumentInfo);
@@ -87,7 +87,7 @@ public class TradingController {
     // Endpoint to fetch combined data for a symbol
     @GetMapping("/combined/{symbol}")
     public ResponseEntity<Map<String, Object>> getCombinedData(@PathVariable String symbol,
-                                                               @RequestParam(defaultValue = "postgres") String dbsource) {
+                                                               @RequestParam String dbsource) {
         performanceMetrics.startSession();
         List<CombinedStockDataDTO> combinedData = tradingService.getCombinedDataBySymbol(symbol, dbsource);
         long dataSize = calculateDataSize(combinedData);

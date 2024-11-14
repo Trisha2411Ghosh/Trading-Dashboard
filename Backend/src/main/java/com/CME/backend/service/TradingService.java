@@ -6,8 +6,10 @@ import com.CME.backend.model.StockData;
 import com.CME.backend.model.TradeInfo;
 import com.CME.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,8 +34,18 @@ public class TradingService {
     @Autowired
     private CombinedDataRepository combinedDataRepository;
 
+    private void validateDbSource(String dbsource) {
+        if (!"clickhouse".equalsIgnoreCase(dbsource) && !"postgres".equalsIgnoreCase(dbsource)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Invalid dbsource parameter. Use 'clickhouse' or 'postgres'."
+            );
+        }
+    }
+
     // Fetch all stocks data
     public List<StockData> getAllStockData(String dbsource) {
+        validateDbSource(dbsource);
+
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findAllStockData();
         }
@@ -42,6 +54,8 @@ public class TradingService {
 
     // Fetch specific stock data using symbol
     public StockData getStockDataBySymbol(String symbol, String dbsource) {
+        validateDbSource(dbsource);
+
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findStockDataBySymbol(symbol);
         }
@@ -50,6 +64,8 @@ public class TradingService {
 
     // Fetch specific trade info using symbol
     public List<TradeInfo> getTradeInfoBySymbol(String symbol, String dbsource) {
+        validateDbSource(dbsource);
+
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findTradeInfoBySymbol(symbol);
         } else {
@@ -59,6 +75,8 @@ public class TradingService {
 
     // Fetch specific instrument info using symbol
     public Instrument getInstrumentById(String instrumentId, String dbsource) {
+        validateDbSource(dbsource);
+
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
         return clickhouseRepository.findInstrumentByInstrumentId(instrumentId);
     }
@@ -69,6 +87,8 @@ public class TradingService {
 
     // Fetch combined data for a specific symbol
     public List<CombinedStockDataDTO> getCombinedDataBySymbol(String symbol, String dbsource) {
+        validateDbSource(dbsource);
+
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findCombinedDataBySymbol(symbol);
         } else {
