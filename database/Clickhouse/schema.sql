@@ -18,7 +18,7 @@ ORDER BY symbol;
 
 CREATE TABLE IF NOT EXISTS trade_info (
     trade_id String,
-    instrument_id,
+    instrument_id String,
     traded_volume_lakhs Decimal(10, 2),
     traded_value_cr Decimal(10, 2),
     total_market_cap_cr Decimal(10, 2),
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS trade_info (
     applicable_margin_rate Decimal(10, 2),
     face_value Decimal(10, 2)
 ) ENGINE = MergeTree() 
-ORDER BY symbol;
+ORDER BY instrument_id;
 
 CREATE TABLE IF NOT EXISTS instrument (
     instrument_id String,
