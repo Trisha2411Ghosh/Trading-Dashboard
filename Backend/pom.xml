@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.CME</groupId>
-	<artifactId>tradingdashboardnew</artifactId>
+	<artifactId>tradingdashboardBackend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>tradingdashboardnew</name>
 	<description>Trading Dashboard project with Spring Boot</description>
