@@ -1,6 +1,8 @@
 package com.CME.backend.controller;
 
 import com.CME.backend.dto.CombinedStockDataDTO;
+import com.CME.backend.dto.IndustryAggregateDTO;
+import com.CME.backend.dto.TradeAggregateDTO;
 import com.CME.backend.model.Instrument;
 import com.CME.backend.model.StockData;
 import com.CME.backend.model.TradeInfo;
@@ -8,9 +10,13 @@ import com.CME.backend.service.TradingService;
 import com.CME.backend.util.PerformanceMetrics;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +25,7 @@ import java.util.Map;
 @RequestMapping("/")
 @CrossOrigin
 public class TradingController {
+
     @Autowired
     private TradingService tradingService;
 
@@ -35,7 +42,6 @@ public class TradingController {
         Map<String, Object> response = new HashMap<>();
         response.put("data", stockData);
         response.put("performanceMetrics", getPerformanceMetrics());
-
         return ResponseEntity.ok(response);
     }
 
@@ -50,37 +56,34 @@ public class TradingController {
         Map<String, Object> response = new HashMap<>();
         response.put("data", stockData);
         response.put("performanceMetrics", getPerformanceMetrics());
-
         return ResponseEntity.ok(response);
     }
 
-    // Endpoint to fetch specific trade information for a symbol
-    @GetMapping("/trades/{symbol}")
-    public ResponseEntity<Map<String, Object>> getTradeInfo(@PathVariable String symbol,
+    // Endpoint to fetch specific trade information for an instrument ID
+    @GetMapping("/trades/{instrumentid}")
+    public ResponseEntity<Map<String, Object>> getTradeInfo(@PathVariable String instrumentid,
                                                             @RequestParam String dbsource) {
         performanceMetrics.startSession();
-        List<TradeInfo> tradeInfo = tradingService.getTradeInfoBySymbol(symbol, dbsource);
+        List<TradeInfo> tradeInfo = tradingService.getTradeInfoByInstrumentId(instrumentid, dbsource);
         long dataSize = calculateDataSize(tradeInfo);
         performanceMetrics.endQuery(dataSize);
         Map<String, Object> response = new HashMap<>();
         response.put("data", tradeInfo);
         response.put("performanceMetrics", getPerformanceMetrics());
-
         return ResponseEntity.ok(response);
     }
 
-    // Endpoint to fetch specific instrument information for a symbol
+    // Endpoint to fetch specific instrument information for an instrument ID
     @GetMapping("/instruments/{instrumentId}")
     public ResponseEntity<Map<String, Object>> getInstrumentInfo(@PathVariable String instrumentId,
                                                                  @RequestParam String dbsource) {
         performanceMetrics.startSession();
-        Instrument instrumentInfo = tradingService.getInstrumentById(instrumentId,dbsource);
+        Instrument instrumentInfo = tradingService.getInstrumentById(instrumentId, dbsource);
         long dataSize = calculateDataSize(instrumentInfo);
         performanceMetrics.endQuery(dataSize);
         Map<String, Object> response = new HashMap<>();
         response.put("data", instrumentInfo);
         response.put("performanceMetrics", getPerformanceMetrics());
-
         return ResponseEntity.ok(response);
     }
 
@@ -95,15 +98,53 @@ public class TradingController {
         Map<String, Object> response = new HashMap<>();
         response.put("data", combinedData);
         response.put("performanceMetrics", getPerformanceMetrics());
+        return ResponseEntity.ok(response);
+    }
 
+    // Endpoint to test trade specific aggregate function
+    @GetMapping("/aggregate")
+    public ResponseEntity<Map<String, Object>> getTradeStats(
+            @RequestParam("dbsource") String dbsource,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        performanceMetrics.startSession();
+        List<TradeAggregateDTO> aggregateData = tradingService.getTradeStats(dbsource, startDate, endDate);
+        long dataSize = calculateDataSize(aggregateData);
+        performanceMetrics.endQuery(dataSize);
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", aggregateData);
+        response.put("performanceMetrics", getPerformanceMetrics());
+        return ResponseEntity.ok(response);
+    }
+
+    // Endpoint to test industry specific aggregate function
+    @GetMapping("/industry")
+    public ResponseEntity<Map<String, Object>> getIndustryStats(
+            @RequestParam("dbsource") String dbsource,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        performanceMetrics.startSession();
+        List<IndustryAggregateDTO> aggregateData = tradingService.getIndustryStats(dbsource, startDate, endDate);
+        long dataSize = calculateDataSize(aggregateData);
+        performanceMetrics.endQuery(dataSize);
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", aggregateData);
+        response.put("performanceMetrics", getPerformanceMetrics());
         return ResponseEntity.ok(response);
     }
 
     // Method to calculate data size in bytes
     private long calculateDataSize(Object data) {
         try {
-            return objectMapper.writeValueAsBytes(data).length;
-        } catch (Exception e) {
+            if (data == null) {
+                System.out.println("Data is null");
+                return 0;
+            }
+            byte[] byteData = objectMapper.writeValueAsBytes(data);
+            System.out.println("Data Size: " + byteData.length);
+            return byteData.length;
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
@@ -112,8 +153,16 @@ public class TradingController {
     // Method to get performance metrics as a map and reset them
     private Map<String, Object> getPerformanceMetrics() {
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put("readSpeed", performanceMetrics.getReadSpeed() + " ms");
-        metrics.put("throughput", performanceMetrics.getThroughput() + " bytes/sec");
+        BigDecimal elapsedTimeSeconds = performanceMetrics.getElapsedTimeSeconds();
+        BigDecimal throughput = performanceMetrics.getThroughput();
+
+        System.out.println("Elapsed Time (s): " + elapsedTimeSeconds);
+        System.out.println("Throughput (bytes/sec): " + throughput);
+        System.out.println("Total Bytes Processed: " + performanceMetrics.getTotalBytesProcessed());
+
+        metrics.put("readSpeed", elapsedTimeSeconds.setScale(9, RoundingMode.HALF_UP) + " seconds");
+        metrics.put("throughput", throughput.stripTrailingZeros().toPlainString() + " bytes/sec");
+
         performanceMetrics.resetMetrics();
         return metrics;
     }

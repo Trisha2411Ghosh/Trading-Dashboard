@@ -1,6 +1,8 @@
 package com.CME.backend.repository;
 
+import com.CME.backend.dto.TradeAggregateDTO;
 import com.CME.backend.dto.CombinedStockDataDTO;
+import com.CME.backend.dto.IndustryAggregateDTO;
 import com.CME.backend.model.Instrument;
 import com.CME.backend.model.StockData;
 import com.CME.backend.model.TradeInfo;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -19,6 +22,7 @@ public class ClickhouseRepository {
     public ClickhouseRepository(@Qualifier("clickhouseJdbcTemplate") JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
 
     // Fetch all records from stock_data table.
     public List<StockData> findAllStockData() {
@@ -77,8 +81,9 @@ public class ClickhouseRepository {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    //    Fetch trade information for a specific symbol from trade_info table.
-    public List<TradeInfo> findTradeInfoBySymbol(String symbol) {
+
+    //    Fetch trade information for a specific instrument ID from trade_info table.
+    public List<TradeInfo> findTradeInfoByInstrumentId(String instrumentId) {
         String sql = """
                     SELECT trade_id, instrument_id, traded_volume_lakhs, traded_value_cr, total_market_cap_cr,
                            ffm_cap, impact_cost, percent_deliverable_traded_quantity,
@@ -86,7 +91,7 @@ public class ClickhouseRepository {
                     FROM trade_info
                     WHERE LOWER(instrument_id) = LOWER(?)
                 """;
-        return jdbcTemplate.query(sql, new Object[]{symbol}, (rs, rowNum) -> {
+        return jdbcTemplate.query(sql, new Object[]{instrumentId}, (rs, rowNum) -> {
             TradeInfo tradeInfo = new TradeInfo();
             tradeInfo.setTradeId(rs.getString("trade_id"));
             tradeInfo.setInstrumentId(rs.getString("instrument_id"));
@@ -103,8 +108,9 @@ public class ClickhouseRepository {
         });
     }
 
+
     //      Fetch instrument data for a specific instrument ID from instrument table.
-    public Instrument findInstrumentByInstrumentId(String instrumentId) {
+    public Instrument findInstrumentInfoByInstrumentId(String instrumentId) {
         String sql = """
                     SELECT instrument_id, week_52_high, week_52_low, upper_band, lower_band, price_band,
                            daily_volatility, annualised_volatility, tick_size, long_name, industry,
@@ -135,6 +141,7 @@ public class ClickhouseRepository {
     }
 
 
+    //   fetch combined data from all three tables(Stock_data, trade_info and instruments) by joining tables using symbol and instrument id
     public List<CombinedStockDataDTO> findCombinedDataBySymbol(String symbol) {
         String sql = """
                 SELECT
@@ -148,4 +155,67 @@ public class ClickhouseRepository {
 
         return jdbcTemplate.query(sql, new CombinedStockDataDTORowMapper(), symbol);
     }
+
+
+    //    Fetch trade specific aggregated statistics from trade_info table using startDate and endDate
+    public List<TradeAggregateDTO> getTradeAggregateStats(LocalDate startDate, LocalDate endDate) {
+        String query = """
+            SELECT
+                instrument_id,
+                trade_date,
+                AVG(traded_value_cr) AS avg_price,
+                SUM(traded_volume_lakhs) AS total_volume,
+                MAX(traded_value_cr) AS max_price
+            FROM
+                trade_info
+            WHERE
+                trade_date BETWEEN ? AND ?
+            GROUP BY
+                instrument_id, trade_date
+            ORDER BY
+                trade_date ASC, instrument_id ASC
+            LIMIT 100
+        """;
+
+        return jdbcTemplate.query(query, (rs, rowNum) -> new TradeAggregateDTO(
+                rs.getString("instrument_id"),
+                rs.getDate("trade_date").toLocalDate(),
+                rs.getBigDecimal("avg_price"),
+                rs.getBigDecimal("total_volume"),
+                rs.getBigDecimal("max_price")
+        ), startDate, endDate);
+    }
+
+
+    //    Fetch industry specific aggregated statistics from trade_info table using startDate and endDate
+    public List<IndustryAggregateDTO> getIndustryAggregateStats(LocalDate startDate, LocalDate endDate) {
+        String query = """
+        SELECT
+            industry,
+            toStartOfMonth(trade_date) AS trade_month,
+            AVG(traded_value_cr) AS avg_traded_value,
+            SUM(traded_volume_lakhs) AS total_traded_volume,
+            MAX(traded_value_cr) AS max_traded_value
+        FROM
+            trade_info
+        INNER JOIN
+            instrument USING (instrument_id)
+        WHERE
+            trade_date BETWEEN ? AND ?
+        GROUP BY
+            industry, trade_month
+        ORDER BY
+            trade_month ASC, industry ASC
+        LIMIT 100
+    """;
+
+        return jdbcTemplate.query(query, (rs, rowNum) -> new IndustryAggregateDTO(
+                rs.getString("industry"),
+                rs.getDate("trade_month").toLocalDate(),
+                rs.getBigDecimal("avg_traded_value"),
+                rs.getBigDecimal("total_traded_volume"),
+                rs.getBigDecimal("max_traded_value")
+        ), startDate, endDate);
+    }
+
 }
