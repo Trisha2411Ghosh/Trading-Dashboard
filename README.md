@@ -5,7 +5,7 @@ The **Trading Dashboard** backend is a RESTful API service that provides access 
 It enables users to query financial data efficiently and compare the read performance (speed and throughput) of both databases.  
 
 This project is deployed using [Render](https://render.com) and can be accessed at:  
-👉 **[https://trading-dashboard-backend.onrender.com/](https://trading-dashboard-backend.onrender.com/)**  
+ - **[https://trading-dashboard-backend.onrender.com/](https://trading-dashboard-backend.onrender.com/)**  
 
 ---
 
