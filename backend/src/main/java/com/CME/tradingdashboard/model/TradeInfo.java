@@ -3,6 +3,7 @@ package com.CME.tradingdashboard.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "trade_info")
@@ -19,6 +20,7 @@ public class TradeInfo {
     private BigDecimal percentDeliverableTradedQuantity;
     private BigDecimal applicableMarginRate;
     private BigDecimal faceValue;
+    private LocalDate tradeDate;
 
     // Getters and Setters
     public String getTrade_id() {
@@ -100,4 +102,7 @@ public class TradeInfo {
     public void setFaceValue(BigDecimal faceValue) {
         this.faceValue = faceValue;
     }
+     public LocalDate getTradeDate() { return tradeDate; }
+
+    public void setTradeDate(LocalDate tradeDate) { this.tradeDate = tradeDate; }
 }
