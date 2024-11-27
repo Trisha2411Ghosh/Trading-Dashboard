@@ -1,7 +1,7 @@
 package com.CME.backend.repository;
 
-import com.CME.backend.dto.TradeAggregateDTO;
 import com.CME.backend.dto.IndustryAggregateDTO;
+import com.CME.backend.dto.TradeAggregateDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +37,33 @@ public class TradingController {
     @GetMapping("/stocks")
     public ResponseEntity<Map<String, Object>> getAllStockData(@RequestParam String dbsource) {
         performanceMetrics.startSession();
-        List<StockData> stockData = tradingService.getAllStockData(dbsource);
-        long dataSize = calculateDataSize(stockData);
-        performanceMetrics.endQuery(dataSize);
+        List<StockData> stockDataList = tradingService.getAllStockData(dbsource);
+
+        List<Map<String, Object>> dataWithMetrics = new ArrayList<>();
+
+        for (StockData row : stockDataList) {
+            PerformanceMetrics rowPerformanceMetrics = new PerformanceMetrics();
+            rowPerformanceMetrics.startSession();
+            long dataSize = calculateDataSize(row);
+            rowPerformanceMetrics.endQuery(dataSize);
+
+            Map<String, Object> rowWithMetrics = new HashMap<>();
+            rowWithMetrics.put("info", row); // Original row data
+            rowWithMetrics.put("rowMetrics", getRowPerformanceMetrics(rowPerformanceMetrics));
+
+            dataWithMetrics.add(rowWithMetrics);
+        }
+
+        long totalDataSize = calculateDataSize(stockDataList);
+        performanceMetrics.endQuery(totalDataSize);
+
         Map<String, Object> response = new HashMap<>();
-        response.put("data", stockData);
-        response.put("performanceMetrics", getPerformanceMetrics());
+        response.put("data", dataWithMetrics);
+        response.put("overallPerformanceMetrics", getPerformanceMetrics());
+
         return ResponseEntity.ok(response);
     }
+
 
     // Endpoint to fetch specific stock data by symbol
     @GetMapping("/stocks/{symbol}")
@@ -59,6 +79,7 @@ public class TradingController {
         return ResponseEntity.ok(response);
     }
 
+
     // Endpoint to fetch specific trade information for an instrument ID
     @GetMapping("/trades/{instrumentid}")
     public ResponseEntity<Map<String, Object>> getTradeInfo(@PathVariable String instrumentid,
@@ -72,6 +93,7 @@ public class TradingController {
         response.put("performanceMetrics", getPerformanceMetrics());
         return ResponseEntity.ok(response);
     }
+
 
     // Endpoint to fetch specific instrument information for an instrument ID
     @GetMapping("/instruments/{instrumentId}")
@@ -101,6 +123,7 @@ public class TradingController {
         return ResponseEntity.ok(response);
     }
 
+
     // Endpoint to test trade specific aggregate function
     @GetMapping("/aggregate")
     public ResponseEntity<Map<String, Object>> getTradeStats(
@@ -116,6 +139,7 @@ public class TradingController {
         response.put("performanceMetrics", getPerformanceMetrics());
         return ResponseEntity.ok(response);
     }
+
 
     // Endpoint to test industry specific aggregate function
     @GetMapping("/industry")
@@ -137,18 +161,29 @@ public class TradingController {
     private long calculateDataSize(Object data) {
         try {
             if (data == null) {
-                System.out.println("Data is null");
                 return 0;
             }
             byte[] byteData = objectMapper.writeValueAsBytes(data);
-            System.out.println("Data Size: " + byteData.length);
             return byteData.length;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
+
+
+    // Method to get performance metrics for each row
+    private Map<String, Object> getRowPerformanceMetrics(PerformanceMetrics rowPerformanceMetrics) {
+        Map<String, Object> metrics = new HashMap<>();
+        BigDecimal elapsedTimeSeconds = rowPerformanceMetrics.getElapsedTimeSeconds();
+        BigDecimal throughput = rowPerformanceMetrics.getThroughput();
+
+        metrics.put("readSpeed", elapsedTimeSeconds.setScale(9, RoundingMode.HALF_UP) + " seconds");
+        metrics.put("throughput", throughput.stripTrailingZeros().toPlainString() + " bytes/sec");
+
+        return metrics;
+    }
+
 
     // Method to get performance metrics as a map and reset them
     private Map<String, Object> getPerformanceMetrics() {
@@ -158,11 +193,9 @@ public class TradingController {
 
         System.out.println("Elapsed Time (s): " + elapsedTimeSeconds);
         System.out.println("Throughput (bytes/sec): " + throughput);
-        System.out.println("Total Bytes Processed: " + performanceMetrics.getTotalBytesProcessed());
 
         metrics.put("readSpeed", elapsedTimeSeconds.setScale(9, RoundingMode.HALF_UP) + " seconds");
         metrics.put("throughput", throughput.stripTrailingZeros().toPlainString() + " bytes/sec");
-
         performanceMetrics.resetMetrics();
         return metrics;
     }

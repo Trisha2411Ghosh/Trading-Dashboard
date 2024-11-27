@@ -1,8 +1,8 @@
 package com.CME.backend.service;
 
-import com.CME.backend.dto.TradeAggregateDTO;
 import com.CME.backend.dto.CombinedStockDataDTO;
 import com.CME.backend.dto.IndustryAggregateDTO;
+import com.CME.backend.dto.TradeAggregateDTO;
 import com.CME.backend.model.Instrument;
 import com.CME.backend.model.StockData;
 import com.CME.backend.model.TradeInfo;
@@ -56,8 +56,7 @@ public class TradingService {
 
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findAllStockData();
-        }
-        else {
+        } else {
             return stockDataRepository.findAll();
         }
     }
@@ -68,8 +67,7 @@ public class TradingService {
 
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findStockDataBySymbol(symbol);
-        }
-        else {
+        } else {
             return stockDataRepository.findStockDataBySymbol(symbol);
         }
     }
@@ -80,8 +78,7 @@ public class TradingService {
 
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findTradeInfoByInstrumentId(instrumentid);
-        }
-        else {
+        } else {
             return tradeInfoRepository.findTradeInfoByInstrumentId(instrumentid);
         }
     }
@@ -92,8 +89,7 @@ public class TradingService {
 
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findInstrumentInfoByInstrumentId(instrumentId);
-        }
-        else {
+        } else {
             return instrumentRepository.findInstrumentInfoByInstrumentId(instrumentId);
         }
     }
@@ -104,8 +100,7 @@ public class TradingService {
 
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.findCombinedDataBySymbol(symbol);
-        }
-        else {
+        } else {
             return combinedDataRepository.findCombinedDataBySymbol(symbol);
         }
     }
@@ -116,8 +111,7 @@ public class TradingService {
 
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.getTradeAggregateStats(startDate, endDate);
-        }
-        else {
+        } else {
             return aggregateRepository.getTradeAggregateStats(startDate, endDate);
         }
     }
@@ -128,8 +122,7 @@ public class TradingService {
 
         if ("clickhouse".equalsIgnoreCase(dbsource)) {
             return clickhouseRepository.getIndustryAggregateStats(startDate, endDate);
-        }
-        else {
+        } else {
             return aggregateRepository.getIndustryAggregateStats(startDate, endDate);
         }
     }
