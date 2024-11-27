@@ -77,6 +77,8 @@ public class ClickhouseRepository {
             tradeInfo.setPercentDeliverableTradedQuantity(rs.getBigDecimal("percent_deliverable_traded_quantity"));
             tradeInfo.setApplicableMarginRate(rs.getBigDecimal("applicable_margin_rate"));
             tradeInfo.setFaceValue(rs.getBigDecimal("face_value"));
+            tradeInfo.setTradeDate(rs.getLocalDate("face_value"));
+            
             return tradeInfo;
         });
         return result.isEmpty() ? null : result.get(0);
